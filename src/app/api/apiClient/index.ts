@@ -7,8 +7,11 @@ const apiClient = axios.create({
 // Add a request interceptor
 apiClient.interceptors.request.use(
   (config) => {
-    config.headers.Authorization =
-      'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MTBjNWY3N2JlMmQxYjJiOWVkOTRiZiIsImVtYWlsIjoiYTNAeWFob28uY29tIiwiaWF0IjoxNjk1NTk5MjI2LCJleHAiOjE2OTU3MDcyMjZ9.e5CI-nPF8-KTdkKgzyoRtGauQW0JPQmNe4svcUT4ilY';
+    const jwt = localStorage.getItem('faceverse-jwt');
+    if (jwt) {
+      config.headers.Authorization = `Bearer ${jwt}`;
+    }
+
     return config;
   },
   (error) => {
@@ -27,6 +30,7 @@ axios.interceptors.response.use(
   (error) => {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
+    console.log(error);
     return Promise.reject(error);
   }
 );
