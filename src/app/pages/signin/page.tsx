@@ -1,7 +1,7 @@
 'use client';
 import authServices from '@/app/api/auth/auth-api';
 import { useRef, useState } from 'react';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 type FormValues = {
   email: string;
@@ -11,6 +11,8 @@ type FormValues = {
 const Login = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const [isLoggedin, setLoggedin] = useState<boolean>(false);
+
+  const router = useRouter();
 
   async function handleSubmit(e: any) {
     const abortController = new AbortController();
@@ -32,14 +34,15 @@ const Login = () => {
         localStorage.setItem('faceverse-jwt', accessTokenString);
         setLoggedin(true);
       }
+
       return response;
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
       abortController.abort();
     }
   }
   if (isLoggedin) {
-    return <div>You are now logged in!</div>;
+    return router.push('/');
   }
   return (
     <div className="bg-gray-100 flex items-center justify-center h-screen">
