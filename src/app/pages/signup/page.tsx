@@ -1,8 +1,10 @@
 'use client';
 import { useRef } from 'react';
-
+import { useRouter } from 'next/navigation';
 const SignupForm = () => {
   const formRef = useRef<HTMLFormElement>(null);
+
+  const router = useRouter();
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -11,6 +13,7 @@ const SignupForm = () => {
     const formData = new FormData(formRef.current);
     const formValues = Object.fromEntries(formData.entries());
     console.log(formValues);
+    router.push('/pages/signin');
   };
 
   return (

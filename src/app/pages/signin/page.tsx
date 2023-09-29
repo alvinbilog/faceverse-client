@@ -10,7 +10,6 @@ type FormValues = {
 
 const Login = () => {
   const formRef = useRef<HTMLFormElement>(null);
-  const [isLoggedin, setLoggedin] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -32,7 +31,9 @@ const Login = () => {
 
       if (response.success) {
         localStorage.setItem('faceverse-jwt', accessTokenString);
-        setLoggedin(true);
+
+        console.log('success');
+        router.push('/components/home');
       }
 
       return response;
@@ -41,9 +42,7 @@ const Login = () => {
       abortController.abort();
     }
   }
-  if (isLoggedin) {
-    return router.push('/');
-  }
+
   return (
     <div className="bg-gray-100 flex items-center justify-center h-screen">
       <div className="bg-white p-8 rounded shadow-md w-96">

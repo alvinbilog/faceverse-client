@@ -35,8 +35,8 @@ async function signin(email: string, password: string, signal: AbortSignal) {
   return response.data;
 }
 
-async function signout(email: string, password: string) {
-  const response = await apiClient.post('auth/signout', { email, password });
+async function signout() {
+  const response = await apiClient.post('auth/signout');
   return response.data;
 }
 
