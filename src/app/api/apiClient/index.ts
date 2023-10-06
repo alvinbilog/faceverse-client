@@ -9,6 +9,7 @@ apiClient.interceptors.request.use(
   (config) => {
     const jwt = localStorage.getItem('faceverse-jwt');
     if (jwt) {
+      console.log('jwt', jwt);
       config.headers.Authorization = `Bearer ${jwt}`;
     }
 

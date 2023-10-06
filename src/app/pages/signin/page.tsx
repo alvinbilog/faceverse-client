@@ -27,18 +27,17 @@ const Login = () => {
         formValues.password,
         abortController.signal
       );
+
       const accessTokenString = response.data.accessToken;
 
       if (response.success) {
-        localStorage.setItem('faceverse-jwt', accessTokenString);
-
-        console.log('success');
+        // localStorage.setItem('faceverse-jwt', accessTokenString);
+        document.cookie = `faceverse-jwt=${accessTokenString}; path=/;`;
         router.push('/components/home');
       }
 
       return response;
     } catch (error: any) {
-      console.log(error);
       abortController.abort();
     }
   }

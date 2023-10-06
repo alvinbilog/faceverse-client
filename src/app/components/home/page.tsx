@@ -11,7 +11,9 @@ export default function Home() {
     try {
       await authServices.signout();
       localStorage.removeItem('faceverse-jwt');
-      console.log('localStorage', localStorage);
+      document.cookie =
+        'faceverse-jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+
       router.push('/pages/signin');
     } catch (error) {}
   }
