@@ -1,94 +1,141 @@
 'use client';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 const SignupForm = () => {
   const formRef = useRef<HTMLFormElement>(null);
-
   const router = useRouter();
-
+  const [isSuccessful, setIsSuccessful] = useState(false);
   const handleSubmit = (e: any) => {
-    e.preventDefault();
-
-    if (!formRef.current) return;
-    const formData = new FormData(formRef.current);
-    const formValues = Object.fromEntries(formData.entries());
-    console.log(formValues);
-    router.push('/pages/signin');
+    try {
+      e.preventDefault();
+      if (!formRef.current) return;
+      const formData = new FormData(formRef.current);
+      const formValues = Object.fromEntries(formData.entries());
+      console.log(formValues);
+      setIsSuccessful(true);
+      // router.push('/pages/signin');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-8">
-      <h2 className="text-2xl font-semibold mb-4">Sign Up</h2>
-      <form ref={formRef} onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="firstName"
-          >
-            First Name
-          </label>
-          <input
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-            type="text"
-            id="firstName"
-            name="firstName"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="lastName"
-          >
-            Last Name
-          </label>
-          <input
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-            type="text"
-            id="lastName"
-            name="lastName"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="email"
-          >
-            Email
-          </label>
-          <input
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-            type="email"
-            id="email"
-            name="email"
-            required
-          />
-        </div>
-        <div className="mb-6">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="password"
-          >
-            Password
-          </label>
-          <input
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-            type="password"
-            id="password"
-            name="password"
-            required
-          />
-        </div>
-        <div className="mb-6">
-          <button
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-            type="submit"
-          >
-            Sign Up
-          </button>
-        </div>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        {isSuccessful ? (
+          <div className="text-center">
+            <span className="block text-green-600 font-bold">
+              Successfully signed up!
+            </span>
+            <Link
+              href="/pages/signin"
+              className="text-indigo-600 hover:text-indigo-500"
+            >
+              Sign in to your account
+            </Link>
+          </div>
+        ) : (
+          <>
+            <div>
+              <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                Create your Faceverse account
+              </h2>
+            </div>
+            <form
+              className="mt-8 space-y-6"
+              ref={formRef}
+              onSubmit={handleSubmit}
+            >
+              <div className="rounded-md shadow-sm -space-y-px">
+                <div>
+                  <label htmlFor="first-name" className="sr-only">
+                    First Name
+                  </label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    autoComplete="given-name"
+                    required
+                    className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                    placeholder="First Name"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="last-name" className="sr-only">
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    autoComplete="family-name"
+                    required
+                    className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                    placeholder="Last Name"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email-address" className="sr-only">
+                    Email address
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    autoComplete="email"
+                    required
+                    className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                    placeholder="Email address"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="password" className="sr-only">
+                    Password
+                  </label>
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="new-password"
+                    required
+                    className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                    placeholder="Password"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  Sign Up
+                </button>
+              </div>
+            </form>
+            <div className="mt-6">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-gray-50 text-gray-500">Or</span>
+                </div>
+              </div>
+              <div className="mt-6">
+                <Link
+                  href="/pages/signin"
+                  className="block w-full text-center py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  Already have an account? Sign In
+                </Link>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };
