@@ -32,7 +32,7 @@ const Login = () => {
       const accessTokenString = response.data.accessToken;
       if (response.success) {
         document.cookie = `faceverse-jwt=${accessTokenString}; path=/;`;
-        router.push('/components/home');
+        router.push('/pages/home');
       } else {
         setHasError(true);
       }

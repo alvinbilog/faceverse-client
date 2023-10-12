@@ -11,5 +11,5 @@ export function middleware(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ['/components/home'],
+  matcher: ['/pages/home'],
 };

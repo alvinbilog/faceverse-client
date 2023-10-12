@@ -2,8 +2,8 @@
 import authServices from '@/app/api/auth/auth-api';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import Nav from '../navigation/page';
-import Post from '../post/page';
+import Nav from '../../components/navigation/page';
+import Post from '../../components/post/page';
 
 export default function Home() {
   return (

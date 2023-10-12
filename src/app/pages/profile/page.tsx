@@ -1,19 +1,10 @@
+import Nav from '@/app/components/navigation/page';
 import Link from 'next/link';
 
 export default function Profile() {
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Navigation Bar */}
-      <nav className="bg-white p-4 shadow-md">
-        <div className="container mx-auto flex justify-between items-center">
-          <Link href="/home" className="text-2xl font-bold text-indigo-600">
-            Faceverse
-          </Link>
-          <button className="text-gray-600 hover:text-indigo-600">
-            Logout
-          </button>
-        </div>
-      </nav>
+      <Nav />
 
       {/* Main Content */}
       <div className="container mx-auto mt-8 flex space-x-8">

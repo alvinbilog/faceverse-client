@@ -1,3 +1,4 @@
+'use client';
 import Link from 'next/link';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -36,7 +37,7 @@ export default function Nav() {
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo / Home */}
         <Link
-          href="/home"
+          href={'/pages/home'}
           className="text-2xl font-bold text-white hover:text-indigo-400"
         >
           Faceverse
@@ -81,7 +82,9 @@ export default function Nav() {
             alt="User Profile"
             className="h-8 w-8 rounded-full border-2 border-white"
           />
-          <span className="text-white ml-2">John Doe</span>
+          <Link href={'/pages/profile'} className="text-white ml-2">
+            John Doe
+          </Link>
           {/* Logout */}
           <button
             className="text-white hover:text-indigo-400 ml-4"
