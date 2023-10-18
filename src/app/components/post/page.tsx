@@ -1,56 +1,18 @@
 import apiClient from '@/app/api/apiClient';
-import Link from 'next/link';
 import { useQuery } from 'react-query';
 import Comments from '../comments/page';
-import User from '../author/page';
+import Author from '../author/page';
+import PostButtons from '../postBottons/page';
+import React, { useRef, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import OutsideClickHandler from 'react-outside-click-handler';
+import { CommentInterface, PostInterface, UserInterface } from '@/app/types';
 
-export interface PostInterface {
-  _id: number;
-  author: (number | string)[]; // User Reference
-  content: String;
-  image?: String;
-  likes?: (number | string)[];
-  comments?: (number | string)[];
-  hashtags?: Array<string> | string[];
-  createdAt: Date;
-  updatedAt: Date;
-}
-export interface AuthorInterface {
-  _id: number;
-  firstName: string;
-  lastName: string;
-  updatedAt: Date;
-}
-export interface CommentInterface {
-  _id: number;
-  author: AuthorInterface[];
-  post: (number | string)[];
-  content?: string;
-  replies?: (number | string)[];
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface UserInterface {
-  _id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  profilePicture?: string;
-  bio?: string;
-  friends?: number[];
-  posts?: number[];
-  notifications?: number[];
-  createdAt: Date;
-  updatedAt: Date;
-  accountType: string;
-  forgotPasswordToken: string;
-  forgotPasswordTokenExpiry: string;
-  verifyToken: string;
-  verifyTokenExpiry: Date;
-}
 export default function PostList() {
+  const [openDropdownId, setOpenDropdownId] = useState(null);
+  const dropdownRef = useRef(null);
+
   const {
     isLoading,
     isError,
@@ -68,28 +30,73 @@ export default function PostList() {
         //nested populate
         params: { populate: 'author, comments' },
       });
-      // console.log('data', data.data);
       if (data) {
         return data.data;
       }
       throw new Error('No data received');
     },
   });
+  //Sort post by date
+  const sortedPosts = posts?.sort(
+    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+  );
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
   return (
     <>
-      <div className="bg-white p-4 rounded-md shadow-md space-y-4">
-        {posts?.map((post: any) => (
-          <div key={post._id} className="border-b pb-4 mb-4">
-            <div className="flex justify-between items-center mb-2">
+      <div className="">
+        {sortedPosts?.map((post: any) => (
+          <div
+            key={post._id}
+            className="bg-[#f6f4f2] p-4 rounded shadow-md mb-10"
+          >
+            <div className="flex justify-between items-center mb-2 ">
               {post.author?.map((postAuthor: UserInterface) => (
-                <User key={postAuthor._id} postAuthor={postAuthor} />
+                <Author postAuthor={postAuthor} key={postAuthor._id} />
               ))}
+              <OutsideClickHandler
+                onOutsideClick={() => {
+                  setOpenDropdownId(null);
+                }}
+              >
+                <div
+                  className="relative inline-block text-left"
+                  ref={dropdownRef}
+                >
+                  <FontAwesomeIcon
+                    icon={faEllipsis}
+                    onClick={() => setOpenDropdownId(post._id)}
+                    className="text-md cursor-pointer"
+                  />
+                  {openDropdownId === post._id && (
+                    <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                      <div
+                        className="py-1"
+                        role="menu"
+                        aria-orientation="vertical"
+                        aria-labelledby="options-menu"
+                      >
+                        <button
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          role="menuitem"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          role="menuitem"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </OutsideClickHandler>
             </div>
             {post.content && (
-              <p className="text-gray-800 mb-2">{post.content}</p>
+              <p className="text-gray-800 mb-2 ml-1">{post.content}</p>
             )}
             {post.image && (
               <img
@@ -98,6 +105,8 @@ export default function PostList() {
                 className="rounded-md mb-2"
               />
             )}
+            {/* likes and comments */}
+            <PostButtons />
             {post.comments?.length > 0 && (
               <div className="space-y-2 mt-4 pl-4 border-l-2 border-indigo-200">
                 {post.comments.map((comment: CommentInterface) => (
@@ -107,14 +116,6 @@ export default function PostList() {
             )}
           </div>
         ))}
-        {/* {posts &&
-          Array.isArray(posts) &&
-          posts.map((post: PostInterface) => (
-            <div key={post._id}>
-              <h2>{post.author}</h2>
-              <p>{post.content}</p>
-            </div>
-          ))} */}
       </div>
     </>
   );

@@ -12,7 +12,6 @@ const SignupForm = () => {
       if (!formRef.current) return;
       const formData = new FormData(formRef.current);
       const formValues = Object.fromEntries(formData.entries());
-      console.log(formValues);
       setIsSuccessful(true);
       // router.push('/pages/signin');
     } catch (error) {
