@@ -9,19 +9,14 @@ async function signup(
   firstName: string,
   lastName: string,
   email: string,
-  password: string,
-  signal: AbortSignal
+  password: string
 ) {
-  const response = await apiClient.post(
-    'auth/signup',
-    {
-      firstName,
-      lastName,
-      email,
-      password,
-    },
-    { signal }
-  );
+  const response = await apiClient.post('auth/signup', {
+    firstName,
+    lastName,
+    email,
+    password,
+  });
   console.log('response', response);
   return response.data;
 }

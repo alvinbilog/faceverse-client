@@ -12,7 +12,7 @@ export const postServices = {
 export default postServices;
 
 async function createPost(
-  author: number[] | null | undefined,
+  author: number | null | undefined,
   content: string,
   image?: string
 ) {
@@ -28,6 +28,7 @@ async function getPost() {
 async function updatePost() {
   //
 }
-async function deletePost() {
-  //
+async function deletePost(author: string) {
+  // const response = await apiClient.delete('post/delete:id', { author });
+  // return response;
 }

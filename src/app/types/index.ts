@@ -1,6 +1,6 @@
 export interface PostInterface {
   _id: number;
-  author: (number | string)[]; // User Reference
+  author: string; // User Reference
   content: String;
   image?: String;
   likes?: (number | string)[];
@@ -45,6 +45,24 @@ export interface UserInterface {
   verifyTokenExpiry: Date;
 }
 export interface UserContextType {
-  postAuthorId: number[] | null;
-  setPostAuthorId: React.Dispatch<React.SetStateAction<number[] | null>>;
+  postAuthorId: number | null;
+  setPostAuthorId: React.Dispatch<React.SetStateAction<number | null>>;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+export interface UserContextProps {
+  user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+}
+export interface UserData {
+  success: boolean;
+  data: {
+    id: string;
+    name: string;
+    email: string;
+  };
 }

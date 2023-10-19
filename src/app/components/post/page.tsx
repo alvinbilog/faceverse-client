@@ -3,15 +3,23 @@ import { useQuery } from 'react-query';
 import Comments from '../comments/page';
 import Author from '../author/page';
 import PostButtons from '../postBottons/page';
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
-import OutsideClickHandler from 'react-outside-click-handler';
-import { CommentInterface, PostInterface, UserInterface } from '@/app/types';
+import {
+  CommentInterface,
+  PostInterface,
+  UserContextType,
+  UserInterface,
+} from '@/app/types';
+import { Menu } from '@headlessui/react';
 
 export default function PostList() {
   const [openDropdownId, setOpenDropdownId] = useState(null);
   const dropdownRef = useRef(null);
+  // const { postAuthorId, setPostAuthorId } = useContext(
+  //   UserContext
+  // ) as UserContextType;
 
   const {
     isLoading,
@@ -20,22 +28,27 @@ export default function PostList() {
     data: posts,
     isFetching,
     isPreviousData,
-  } = useQuery<PostInterface[], Error>({
-    queryKey: ['post'],
-    queryFn: async () => {
-      const { data } = await apiClient.get('post/all', {
-        //old
-        // params: { populate: 'author' },
+  } = useQuery<PostInterface[], Error>('post', async () => {
+    const { data } = await apiClient.get('post/all', {
+      //old
+      // params: { populate: 'author' },
 
-        //nested populate
-        params: { populate: 'author, comments' },
-      });
-      if (data) {
-        return data.data;
-      }
-      throw new Error('No data received');
-    },
+      //nested populate
+      params: { populate: 'author, comments' },
+    });
+    if (data) {
+      return data.data;
+    }
+    throw new Error('No data received');
   });
+
+  function handleDelete() {
+    setOpenDropdownId(null);
+  }
+  function handleEdit() {
+    console.log('clicked');
+    setOpenDropdownId(null);
+  }
   //Sort post by date
   const sortedPosts = posts?.sort(
     (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
@@ -53,47 +66,59 @@ export default function PostList() {
           >
             <div className="flex justify-between items-center mb-2 ">
               {post.author?.map((postAuthor: UserInterface) => (
-                <Author postAuthor={postAuthor} key={postAuthor._id} />
+                <Author
+                  postAuthor={postAuthor}
+                  key={postAuthor._id}
+                  onAuthorSelected={(id) => {
+                    console.log('Author ID:', id);
+                  }}
+                />
               ))}
-              <OutsideClickHandler
-                onOutsideClick={() => {
-                  setOpenDropdownId(null);
-                }}
-              >
-                <div
-                  className="relative inline-block text-left"
-                  ref={dropdownRef}
-                >
-                  <FontAwesomeIcon
-                    icon={faEllipsis}
-                    onClick={() => setOpenDropdownId(post._id)}
-                    className="text-md cursor-pointer"
-                  />
-                  {openDropdownId === post._id && (
-                    <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                      <div
-                        className="py-1"
-                        role="menu"
-                        aria-orientation="vertical"
-                        aria-labelledby="options-menu"
-                      >
+
+              <Menu>
+                <div className="relative inline-block text-left">
+                  <Menu.Button>
+                    <FontAwesomeIcon
+                      icon={faEllipsis}
+                      className="text-md cursor-pointer"
+                    />
+                  </Menu.Button>
+                  <Menu.Items
+                    className={
+                      'absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50'
+                    }
+                  >
+                    <Menu.Item>
+                      {({ active }) => (
                         <button
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          role="menuitem"
+                          className={`block w-full text-left px-4 py-2 text-sm ${
+                            active
+                              ? 'bg-gray-200 text-gray-900'
+                              : 'text-gray-700 hover:bg-gray-100'
+                          }`}
+                          onClick={handleEdit}
                         >
                           Edit
                         </button>
+                      )}
+                    </Menu.Item>
+                    <Menu.Item>
+                      {({ active }) => (
                         <button
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          role="menuitem"
+                          className={`block w-full text-left px-4 py-2 text-sm ${
+                            active
+                              ? 'bg-gray-200 text-gray-900'
+                              : 'text-gray-700 hover:bg-gray-100'
+                          }`}
+                          onClick={handleDelete}
                         >
                           Delete
                         </button>
-                      </div>
-                    </div>
-                  )}
+                      )}
+                    </Menu.Item>
+                  </Menu.Items>
                 </div>
-              </OutsideClickHandler>
+              </Menu>
             </div>
             {post.content && (
               <p className="text-gray-800 mb-2 ml-1">{post.content}</p>

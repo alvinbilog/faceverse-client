@@ -1,43 +1,47 @@
 'use client';
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import Nav from '../../components/navigation/page';
 import Post from '../../components/post/page';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-solid-svg-icons';
 import { postServices } from '@/app/api/post/postApi';
-import { UserContext } from '@/app/providers';
-import { UserContextType } from '@/app/types';
+// import { UserContext } from '@/app/providers';
+// import { UserContextType } from '@/app/types';
 import { useMutation, useQueryClient } from 'react-query';
 
 export default function Home() {
-  const postRef = useRef<HTMLTextAreaElement | null>(null);
-  const imageRef = useRef<HTMLInputElement | null>(null);
-  const { postAuthorId } = useContext(UserContext) as UserContextType;
+  const [post, setPost] = useState<string | undefined>('');
+  const [file, setFile] = useState<File | null>(null);
+
+  // const { postAuthorId } = useContext(UserContext) as UserContextType;
 
   const queryClient = useQueryClient();
 
-  const createPostMutation = useMutation(
-    (inputPostValue: string) =>
-      postServices.createPost(postAuthorId, inputPostValue),
-    {
-      onSuccess: () => {
-        if (postRef.current) {
-          postRef.current.value = '';
-        }
-        queryClient.invalidateQueries('post');
-      },
-      onError: (error: any) => {
-        console.log(error);
-      },
+  // const createPostMutation = useMutation(
+  //   (inputPostValue: string) =>
+  //     postServices.createPost(postAuthorId, inputPostValue),
+  //   {
+  //     onSuccess: () => {
+  //       if (post) {
+  //         setPost('');
+  //       }
+  //       queryClient.invalidateQueries('post');
+  //     },
+  //     onError: (error: any) => {
+  //       console.log(error);
+  //     },
+  //   }
+  // );
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (e.target.files) {
+      setFile(e.target.files[0]);
     }
-  );
+  }
 
   async function handlePost() {
-    if (!postRef.current) return;
-    const inputPostValue = postRef.current.value;
-    const inputImageString = imageRef.current;
+    if (!post) return alert('Type something');
 
-    createPostMutation.mutate(inputPostValue);
+    // createPostMutation.mutate(post);
   }
 
   return (
@@ -59,7 +63,8 @@ export default function Home() {
             <textarea
               className="w-full p-2 border rounded"
               placeholder="What's on your mind?"
-              ref={postRef}
+              onChange={(e) => setPost(e.target.value)}
+              value={post}
             ></textarea>
             <div className="flex items-center justify-between mt-2">
               {/* upload image */}
@@ -70,7 +75,7 @@ export default function Home() {
                   type="file"
                   className="hidden"
                   accept="image/*"
-                  ref={imageRef}
+                  onChange={(e) => handleFileChange(e)}
                 />
               </label>
               <button

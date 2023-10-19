@@ -2,17 +2,32 @@
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import authServices from '@/app/api/auth/auth-api';
+
 const SignupForm = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const [isSuccessful, setIsSuccessful] = useState(false);
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     try {
       e.preventDefault();
       if (!formRef.current) return;
       const formData = new FormData(formRef.current);
-      const formValues = Object.fromEntries(formData.entries());
+      const formValues: Record<string, string> = {};
+      formData.forEach((value, key) => {
+        if (typeof value === 'string') {
+          formValues[key] = value;
+        }
+      });
+      console.log('values', formValues);
+      const response = await authServices.signup(
+        formValues.firstName,
+        formValues.lastName,
+        formValues.email,
+        formValues.password
+      );
       setIsSuccessful(true);
+      return response;
       // router.push('/pages/signin');
     } catch (error) {
       console.log(error);
