@@ -49,20 +49,28 @@ export interface UserContextType {
   setPostAuthorId: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-}
 export interface UserContextProps {
-  user: User | null;
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  user: UserData | null;
+  setUser: React.Dispatch<React.SetStateAction<UserData | null>>;
 }
 export interface UserData {
   success: boolean;
   data: {
-    id: string;
-    name: string;
+    _id: number;
+    firstName: string;
+    lastName: string;
     email: string;
+    profilePicture?: string;
+    bio?: string;
+    friends?: string[];
+    posts?: string[];
+    notifications?: string[];
+    createdAt: Date;
+    updatedAt: Date;
+    accountType: string;
+    forgotPasswordToken: string;
+    forgotPasswordTokenExpiry: string;
+    verifyToken: string;
+    verifyTokenExpiry: Date;
   };
 }

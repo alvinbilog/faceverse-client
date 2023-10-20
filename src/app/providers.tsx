@@ -1,22 +1,17 @@
 'use client';
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { User, UserContextProps, UserContextType } from './types';
+import { UserContextProps, UserContextType, UserData } from './types';
 
-const UserContext = createContext<UserContextProps | undefined>(undefined);
-
-export function useUser() {
-  const context = useContext(UserContext);
-  if (!context) {
-    throw new Error('useUser must be used within a UserProvider');
-  }
-  return context;
-}
+export const UserContext = createContext<UserContextProps | null>(null);
 
 export default function Providers({ children }: any) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserData | null>(null);
   const [queryClient] = React.useState(() => new QueryClient());
+  useEffect(() => {
+    console.log('User state in Providers:', user);
+  }, [user]);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

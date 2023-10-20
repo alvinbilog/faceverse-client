@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBell,
@@ -10,11 +10,36 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import authServices from '@/app/api/auth/auth-api';
 import { useRouter } from 'next/navigation';
+import { createContext } from 'vm';
+import { UserContextProps, UserData } from '@/app/types';
+import { UserContext } from '@/app/providers';
+import apiClient from '@/app/api/apiClient';
+import { useQuery } from 'react-query';
 
 export default function Nav() {
   const [darkMode, setDarkMode] = useState(false);
-
+  const { user, setUser } = useContext(UserContext) as UserContextProps;
   const router = useRouter();
+
+  const { data, error, isLoading } = useQuery<UserData, Error>(
+    'me/user',
+    async () => {
+      const response = await apiClient.get('me/user', {
+        withCredentials: true,
+      });
+      if (response.status !== 200) {
+        throw new Error('Network response was not ok');
+      }
+      return response.data;
+    }
+  );
+  useEffect(() => {
+    if (data) setUser(data);
+    console.log('user in userProfile', user);
+  }, [data, setUser]);
+  console.log('user in userProfile outside', user);
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
   async function handleLogout() {
     try {
@@ -31,6 +56,8 @@ export default function Nav() {
     setDarkMode(!darkMode);
     // Implement logic to apply dark mode to the entire app
   };
+
+  // check user if undefined
 
   return (
     <nav className="bg-indigo-600 p-4 shadow-md text-white">
@@ -83,7 +110,7 @@ export default function Nav() {
             className="h-8 w-8 rounded-full border-2 border-white"
           />
           <Link href={'/pages/profile'} className="text-white ml-2">
-            John Doe
+            {data?.data.firstName} {data?.data.lastName}
           </Link>
           {/* Logout */}
           <button
