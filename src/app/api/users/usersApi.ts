@@ -6,6 +6,6 @@ const userServices = {
 export default userServices;
 
 async function getUsers() {
-  const response = await apiClient.get('user');
+  const response = await apiClient.get('/');
   console.log(response);
 }

@@ -26,7 +26,7 @@ export interface CommentInterface {
 }
 
 export interface UserInterface {
-  _id: number;
+  _id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -44,19 +44,16 @@ export interface UserInterface {
   verifyToken: string;
   verifyTokenExpiry: Date;
 }
-export interface UserContextType {
-  postAuthorId: number | null;
-  setPostAuthorId: React.Dispatch<React.SetStateAction<number | null>>;
-}
 
 export interface UserContextProps {
   user: UserData | null;
   setUser: React.Dispatch<React.SetStateAction<UserData | null>>;
 }
+
 export interface UserData {
   success: boolean;
   data: {
-    _id: number;
+    _id: string;
     firstName: string;
     lastName: string;
     email: string;

@@ -22,9 +22,9 @@ export default function Nav() {
   const router = useRouter();
 
   const { data, error, isLoading } = useQuery<UserData, Error>(
-    'me/user',
+    'me',
     async () => {
-      const response = await apiClient.get('me/user', {
+      const response = await apiClient.get('me', {
         withCredentials: true,
       });
       if (response.status !== 200) {
@@ -35,9 +35,8 @@ export default function Nav() {
   );
   useEffect(() => {
     if (data) setUser(data);
-    console.log('user in userProfile', user);
   }, [data, setUser]);
-  console.log('user in userProfile outside', user);
+
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 

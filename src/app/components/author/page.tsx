@@ -1,26 +1,11 @@
 import Link from 'next/link';
 import { formatDate } from '@/app/utils';
-import { UserContextType, UserInterface } from '@/app/types';
-
-import { useContext, useEffect } from 'react';
+import { UserInterface } from '@/app/types';
 
 interface PostAuthorProps {
   postAuthor: UserInterface;
-
-  onAuthorSelected?: (id: number) => void;
 }
-export default function User({
-  postAuthor,
-  onAuthorSelected,
-}: PostAuthorProps) {
-  // const { postAuthorId, setPostAuthorId } = useContext(
-  //   UserContext
-  // ) as UserContextType;
-
-  useEffect(() => {
-    onAuthorSelected?.(postAuthor._id);
-  }, [postAuthor._id]);
-
+export default function Author({ postAuthor }: PostAuthorProps) {
   return (
     <div className="flex items-center ">
       <img

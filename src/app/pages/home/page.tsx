@@ -8,30 +8,31 @@ import { postServices } from '@/app/api/post/postApi';
 // import { UserContext } from '@/app/providers';
 // import { UserContextType } from '@/app/types';
 import { useMutation, useQueryClient } from 'react-query';
+import { UserContext } from '@/app/providers';
+import { UserContextProps } from '@/app/types';
 
 export default function Home() {
   const [post, setPost] = useState<string | undefined>('');
   const [file, setFile] = useState<File | null>(null);
-
-  // const { postAuthorId } = useContext(UserContext) as UserContextType;
+  const { user, setUser } = useContext(UserContext) as UserContextProps;
 
   const queryClient = useQueryClient();
 
-  // const createPostMutation = useMutation(
-  //   (inputPostValue: string) =>
-  //     postServices.createPost(postAuthorId, inputPostValue),
-  //   {
-  //     onSuccess: () => {
-  //       if (post) {
-  //         setPost('');
-  //       }
-  //       queryClient.invalidateQueries('post');
-  //     },
-  //     onError: (error: any) => {
-  //       console.log(error);
-  //     },
-  //   }
-  // );
+  const createPostMutation = useMutation(
+    (inputPostValue: string) =>
+      postServices.createPost(user?.data._id, inputPostValue),
+    {
+      onSuccess: () => {
+        if (post) {
+          setPost('');
+        }
+        queryClient.invalidateQueries('post');
+      },
+      onError: (error: any) => {
+        console.log(error);
+      },
+    }
+  );
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files) {
       setFile(e.target.files[0]);
@@ -41,7 +42,7 @@ export default function Home() {
   async function handlePost() {
     if (!post) return alert('Type something');
 
-    // createPostMutation.mutate(post);
+    createPostMutation.mutate(post);
   }
 
   return (

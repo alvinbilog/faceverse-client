@@ -8,9 +8,9 @@ import { useQuery } from 'react-query';
 const UserProfile = () => {
   const { user, setUser } = useContext(UserContext) as UserContextProps;
   const { data, error, isLoading } = useQuery<UserData, Error>(
-    'me/user',
+    'me',
     async () => {
-      const response = await apiClient.get('me/user', {
+      const response = await apiClient.get('me', {
         withCredentials: true,
       });
       if (response.status !== 200) {
@@ -21,7 +21,6 @@ const UserProfile = () => {
   );
   useEffect(() => {
     if (data) setUser(data);
-    console.log('user in userProfile', user);
   }, [data, setUser]);
   console.log('user in userProfile outside', user);
   if (isLoading) return <p>Loading...</p>;

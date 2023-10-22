@@ -16,7 +16,6 @@ apiClient.interceptors.request.use(
   (config) => {
     const jwt = getCookie('faceverse-jwt'); // Use the helper function here
     if (jwt) {
-      console.log('jwt', jwt);
       config.headers.Authorization = `Bearer ${jwt}`;
     }
 

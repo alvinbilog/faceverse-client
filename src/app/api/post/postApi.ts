@@ -12,12 +12,16 @@ export const postServices = {
 export default postServices;
 
 async function createPost(
-  author: number | null | undefined,
+  author: string | null | undefined,
   content: string,
   image?: string
 ) {
-  const response = await apiClient.post('post/', { author, content, image });
-  return response;
+  try {
+    const response = await apiClient.post('post/', { author, content, image });
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
 }
 async function getPosts() {
   //
@@ -28,7 +32,15 @@ async function getPost() {
 async function updatePost() {
   //
 }
-async function deletePost(author: string) {
-  // const response = await apiClient.delete('post/delete:id', { author });
-  // return response;
+async function deletePost(postId: string | undefined) {
+  console.log('id', postId);
+  if (!postId) {
+    throw new Error('Post ID is undefined.');
+  }
+  try {
+    const response = await apiClient.delete(`post/delete/${postId}`);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
 }
