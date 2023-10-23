@@ -29,11 +29,22 @@ async function getPosts() {
 async function getPost() {
   //
 }
-async function updatePost() {
-  //
+async function updatePost(
+  postId: string | undefined,
+  updatedData: { content?: string | undefined }
+) {
+  if (!postId) {
+    throw new Error('Post ID is undefined');
+  }
+
+  try {
+    const response = await apiClient.put(`post/update/${postId}`, updatedData);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
 }
 async function deletePost(postId: string | undefined) {
-  console.log('id', postId);
   if (!postId) {
     throw new Error('Post ID is undefined.');
   }

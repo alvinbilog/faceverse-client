@@ -1,8 +1,12 @@
+export interface PostInterfaceProps {
+  postData: PostInterface | null;
+  setUser: React.Dispatch<React.SetStateAction<null>>;
+}
 export interface PostInterface {
-  _id: number;
+  _id: string;
   author: string; // User Reference
-  content: String;
-  image?: String;
+  content: string;
+  image?: string;
   likes?: (number | string)[];
   comments?: (number | string)[];
   hashtags?: Array<string> | string[];
@@ -10,13 +14,13 @@ export interface PostInterface {
   updatedAt: Date;
 }
 export interface AuthorInterface {
-  _id: number;
+  _id: string;
   firstName: string;
   lastName: string;
   updatedAt: Date;
 }
 export interface CommentInterface {
-  _id: number;
+  _id: string;
   author: AuthorInterface[];
   post: (number | string)[];
   content?: string;

@@ -1,26 +1,24 @@
 import apiClient from '@/app/api/apiClient';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import Comments from '../comments/page';
-import Author from '../author/page';
 import PostButtons from '../postBottons/page';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { Fragment, useContext, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
-import {
-  CommentInterface,
-  PostInterface,
-  UserContextProps,
-  UserInterface,
-} from '@/app/types';
-import { Menu } from '@headlessui/react';
+import { faEllipsis, faImage } from '@fortawesome/free-solid-svg-icons';
+import { CommentInterface, PostInterface, UserContextProps } from '@/app/types';
+import { Menu, Transition } from '@headlessui/react';
 import { UserContext } from '@/app/providers';
 import Link from 'next/link';
 import { formatDate } from '@/app/utils';
 import postServices from '@/app/api/post/postApi';
+import { Dialog } from '@headlessui/react';
 
 export default function PostList() {
   const { user, setUser } = useContext(UserContext) as UserContextProps;
-  const [postId, setPostId] = useState('');
+  let [isOpen, setIsOpen] = useState(false);
+  let textAreaRef = useRef(null);
+  const [newContent, setNewContent] = useState('');
+  const [postData, setPostData] = useState<PostInterface | null>(null);
   // conver userId to string (for ellipsis)
   const userId = (user?.data._id ?? '').toString();
   const queryClient = useQueryClient();
@@ -46,6 +44,23 @@ export default function PostList() {
     }
     throw new Error('No data received');
   });
+  const editPostMutation = useMutation(
+    ({
+      postId,
+      updatedPost,
+    }: {
+      postId: string | undefined;
+      updatedPost: { content: string | undefined };
+    }) => postServices.updatePost(postId, updatedPost),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('post');
+      },
+      onError: (error: any) => {
+        console.log(error.message);
+      },
+    }
+  );
 
   const deletePostMutation = useMutation(
     (postIdString: string | undefined) => postServices.deletePost(postIdString),
@@ -59,11 +74,16 @@ export default function PostList() {
     }
   );
 
-  function handleDelete(id: string) {
-    deletePostMutation.mutate(id);
+  function handleDelete(postId: string) {
+    deletePostMutation.mutate(postId);
   }
-  function handleEdit() {
-    console.log('user', user?.data._id);
+
+  function handleEdit(postId: string | undefined) {
+    // setIsOpen(true);
+    const updatedPost = {
+      content: newContent,
+    };
+    editPostMutation.mutate({ postId: postId, updatedPost });
   }
   //Sort post by date
   const sortedPosts: PostInterface[] | undefined = posts?.sort(
@@ -97,6 +117,10 @@ export default function PostList() {
                   >
                     <span>
                       {post.author.firstName} {post.author.lastName}
+                      <p>{user?.data._id}</p>
+                      <p>{post.author._id}</p>
+                      <p>{post.content}</p>
+                      <p>{post._id}</p>
                     </span>
                   </Link>
                   <div>
@@ -118,7 +142,7 @@ export default function PostList() {
                   )}
                   <Menu.Items
                     className={
-                      'absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50'
+                      'absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-30'
                     }
                   >
                     <Menu.Item>
@@ -129,7 +153,10 @@ export default function PostList() {
                               ? 'bg-gray-200 text-gray-900'
                               : 'text-gray-700 hover:bg-gray-100'
                           }`}
-                          onClick={handleEdit}
+                          onClick={() => {
+                            setPostData(post);
+                            setIsOpen(true);
+                          }}
                         >
                           Edit
                         </button>
@@ -144,8 +171,7 @@ export default function PostList() {
                               : 'text-gray-700 hover:bg-gray-100'
                           }`}
                           onClick={() => {
-                            setPostId(post._id);
-                            handleDelete(postId);
+                            handleDelete(post._id);
                           }}
                         >
                           Delete
@@ -156,6 +182,61 @@ export default function PostList() {
                 </div>
               </Menu>
             </div>
+            {/* Update Modal */}
+
+            <Dialog
+              as="div"
+              initialFocus={textAreaRef}
+              open={isOpen}
+              onClose={() => {
+                setIsOpen(false);
+              }}
+              className="fixed inset-0 flex items-center justify-center z-50"
+            >
+              <div
+                className="absolute inset-0 bg-black opacity-50"
+                onClick={(e) => e.stopPropagation()}
+              ></div>
+              <Dialog.Panel className="relative z-50 w-1/2 bg-white p-4 rounded shadow-md mx-auto border-2 border-red-600">
+                <Dialog.Title>Edit Post</Dialog.Title>
+
+                <textarea
+                  ref={textAreaRef}
+                  className="w-full p-2 border rounded "
+                  placeholder={
+                    postData ? postData.content : `What's on your mind?`
+                  }
+                  onChange={(e) => setNewContent(e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                  // value={postData ? postData.content : ''}
+                  // onChange={(e) => postData.content}
+                ></textarea>
+                <div className="flex items-center justify-between mt-2">
+                  {/* upload image */}
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <FontAwesomeIcon
+                      icon={faImage}
+                      className="text-indigo-600"
+                    />
+                    <span className="text-indigo-600 text-xs">
+                      Upload Image
+                    </span>
+                    <input type="file" className="hidden" accept="image/*" />
+                  </label>
+                  <button
+                    className="text-white bg-indigo-600 px-4 py-2 rounded hover:bg-indigo-700"
+                    onClick={() => {
+                      handleEdit(postData?._id);
+                      setIsOpen(false);
+                    }}
+                    ref={textAreaRef}
+                  >
+                    Update
+                  </button>
+                </div>
+              </Dialog.Panel>
+            </Dialog>
+
             {/* content */}
             {post.content && (
               <p className="text-gray-800 mb-2 ml-1">{post.content}</p>
