@@ -4,11 +4,11 @@ export interface PostInterfaceProps {
 }
 export interface PostInterface {
   _id: string;
-  author: string; // User Reference
+  author: AuthorInterface; // User Reference
   content: string;
   image?: string;
   likes?: (number | string)[];
-  comments?: (number | string)[];
+  comments?: CommentInterface[];
   hashtags?: Array<string> | string[];
   createdAt: Date;
   updatedAt: Date;

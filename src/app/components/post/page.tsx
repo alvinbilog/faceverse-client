@@ -96,7 +96,7 @@ export default function PostList() {
   return (
     <>
       <div className="">
-        {sortedPosts?.map((post: any) => (
+        {sortedPosts?.map((post: PostInterface) => (
           <div
             key={post._id}
             className="bg-[#f6f4f2] p-4 rounded shadow-md mb-10"
@@ -116,7 +116,7 @@ export default function PostList() {
                     className="text-indigo-600 font-bold"
                   >
                     <span>
-                      {post.author.firstName} {post.author.lastName}
+                      {post.author.firstName} {post.author.lastName}{' '}
                       <p>{user?.data._id}</p>
                       <p>{post.author._id}</p>
                       <p>{post.content}</p>
@@ -183,13 +183,12 @@ export default function PostList() {
               </Menu>
             </div>
             {/* Update Modal */}
-
             <Dialog
               as="div"
               initialFocus={textAreaRef}
               open={isOpen}
               onClose={() => {
-                setIsOpen(false);
+                // setIsOpen(false);
               }}
               className="fixed inset-0 flex items-center justify-center z-50"
             >
@@ -197,7 +196,7 @@ export default function PostList() {
                 className="absolute inset-0 bg-black opacity-50"
                 onClick={(e) => e.stopPropagation()}
               ></div>
-              <Dialog.Panel className="relative z-50 w-1/2 bg-white p-4 rounded shadow-md mx-auto border-2 border-red-600">
+              <Dialog.Panel className="relative z-50 w-1/2 bg-white p-4 rounded shadow-md mx-auto ">
                 <Dialog.Title>Edit Post</Dialog.Title>
 
                 <textarea
@@ -208,8 +207,6 @@ export default function PostList() {
                   }
                   onChange={(e) => setNewContent(e.target.value)}
                   onClick={(e) => e.stopPropagation()}
-                  // value={postData ? postData.content : ''}
-                  // onChange={(e) => postData.content}
                 ></textarea>
                 <div className="flex items-center justify-between mt-2">
                   {/* upload image */}
@@ -223,16 +220,27 @@ export default function PostList() {
                     </span>
                     <input type="file" className="hidden" accept="image/*" />
                   </label>
-                  <button
-                    className="text-white bg-indigo-600 px-4 py-2 rounded hover:bg-indigo-700"
-                    onClick={() => {
-                      handleEdit(postData?._id);
-                      setIsOpen(false);
-                    }}
-                    ref={textAreaRef}
-                  >
-                    Update
-                  </button>
+                  <div>
+                    <button
+                      className="text-white bg-indigo-600 px-4 py-2 rounded hover:bg-indigo-700 mr-5"
+                      onClick={() => {
+                        handleEdit(postData?._id);
+                        setIsOpen(false);
+                      }}
+                      ref={textAreaRef}
+                    >
+                      Update
+                    </button>
+                    <button
+                      className="text-white bg-indigo-600 px-4 py-2 rounded hover:bg-indigo-700"
+                      onClick={() => {
+                        setIsOpen(false);
+                      }}
+                      ref={textAreaRef}
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
               </Dialog.Panel>
             </Dialog>
@@ -251,9 +259,9 @@ export default function PostList() {
             )}
             {/* likes and comments */}
             <PostButtons />
-            {post.comments?.length > 0 && (
+            {(post.comments?.length ?? 0) > 0 && (
               <div className="space-y-2 mt-4 pl-4 border-l-2 border-indigo-200">
-                {post.comments.map((comment: CommentInterface) => (
+                {post.comments?.map((comment: CommentInterface) => (
                   <Comments comment={comment} key={comment._id} />
                 ))}
               </div>
