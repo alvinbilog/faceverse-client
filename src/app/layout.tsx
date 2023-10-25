@@ -16,10 +16,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <Providers>
+    <Providers>
+      <html lang="en">
         <body className={inter.className}>{children}</body>
-      </Providers>
-    </html>
+      </html>
+    </Providers>
   );
 }

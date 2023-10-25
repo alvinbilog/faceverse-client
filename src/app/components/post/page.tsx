@@ -1,27 +1,35 @@
-import apiClient from '@/app/api/apiClient';
+import React, { useContext, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faEllipsis,
+  faImage,
+  faPaperPlane,
+} from '@fortawesome/free-solid-svg-icons';
+import { Menu } from '@headlessui/react';
+import { formatDate } from '@/app/utils';
+import { CommentInterface, PostInterface, UserContextProps } from '@/app/types';
+import { UserContext } from '@/app/providers';
 import Comments from '../comments/page';
 import PostButtons from '../postBottons/page';
-import React, { Fragment, useContext, useRef, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsis, faImage } from '@fortawesome/free-solid-svg-icons';
-import { CommentInterface, PostInterface, UserContextProps } from '@/app/types';
-import { Menu, Transition } from '@headlessui/react';
-import { UserContext } from '@/app/providers';
-import Link from 'next/link';
-import { formatDate } from '@/app/utils';
+import apiClient from '@/app/api/apiClient';
 import postServices from '@/app/api/post/postApi';
+import Link from 'next/link';
 import { Dialog } from '@headlessui/react';
+import commentServices from '@/app/api/comment/commentApi';
 
-export default function PostList() {
+export default function Post() {
+  const queryClient = useQueryClient();
   const { user, setUser } = useContext(UserContext) as UserContextProps;
   let [isOpen, setIsOpen] = useState(false);
   let textAreaRef = useRef(null);
   const [newContent, setNewContent] = useState('');
   const [postData, setPostData] = useState<PostInterface | null>(null);
+  const [commentContent, setCommentContent] = useState('');
+  const [authorId, setAuthorId] = useState('');
+
   // conver userId to string (for ellipsis)
   const userId = (user?.data._id ?? '').toString();
-  const queryClient = useQueryClient();
 
   const {
     isLoading,
@@ -89,7 +97,31 @@ export default function PostList() {
   const sortedPosts: PostInterface[] | undefined = posts?.sort(
     (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
   );
+  const createCommentMutation = useMutation(
+    (postAuthor: string) =>
+      commentServices.createComment(
+        user?.data._id ? [user.data._id] : [],
+        postAuthor ? [postAuthor] : [],
+        commentContent
+      ),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('post');
+      },
+      onError: (error: any) => {
+        console.log(error.message);
+      },
+    }
+  );
 
+  function handleCommentSubmit(postAuthor: string) {
+    // console.log('userId', user?.data._id);
+    // console.log('postId', postAuthor);
+    // console.log(commentContent);
+
+    createCommentMutation.mutate(postAuthor);
+    setCommentContent('');
+  }
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
@@ -116,11 +148,11 @@ export default function PostList() {
                     className="text-indigo-600 font-bold"
                   >
                     <span>
-                      {post.author.firstName} {post.author.lastName}{' '}
-                      <p>{user?.data._id}</p>
-                      <p>{post.author._id}</p>
-                      <p>{post.content}</p>
-                      <p>{post._id}</p>
+                      {post.author.firstName} {post.author.lastName}
+                      {/* <p>login user id {user?.data._id}</p>
+                      <p>author id of post {post.author._id}</p>
+                      <p>Post Id {post._id}</p>
+                      <p>postdata author id {postData?.author._id}</p> */}
                     </span>
                   </Link>
                   <div>
@@ -262,10 +294,35 @@ export default function PostList() {
             {(post.comments?.length ?? 0) > 0 && (
               <div className="space-y-2 mt-4 pl-4 border-l-2 border-indigo-200">
                 {post.comments?.map((comment: CommentInterface) => (
-                  <Comments comment={comment} key={comment._id} />
+                  <Comments
+                    comment={comment}
+                    key={comment._id}
+                    postData={postData}
+                  />
                 ))}
               </div>
             )}
+            <div className="flex items-center space-x-4 mt-2 ">
+              {/* <button className="flex items-center text-gray-600 hover:text-indigo-600">
+          Like
+        </button> */}
+              {/* Comment Input */}
+              <div className="mt-4 flex  w-full p-2">
+                <input
+                  type="text"
+                  placeholder="Add a comment..."
+                  value={commentContent}
+                  onChange={(e) => setCommentContent(e.target.value)}
+                  className="w-full border rounded-md ps-2"
+                />
+                <button
+                  onClick={() => handleCommentSubmit(post._id)}
+                  className="ml-5 bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700 "
+                >
+                  <FontAwesomeIcon icon={faPaperPlane} className="text-sm " />
+                </button>
+              </div>
+            </div>
           </div>
         ))}
       </div>

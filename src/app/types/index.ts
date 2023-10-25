@@ -22,7 +22,7 @@ export interface AuthorInterface {
 export interface CommentInterface {
   _id: string;
   author: AuthorInterface[];
-  post: (number | string)[];
+  post: string[];
   content?: string;
   replies?: (number | string)[];
   createdAt: Date;
