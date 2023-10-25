@@ -23,9 +23,16 @@ async function createComment(
     console.log(error.message);
   }
 }
-async function updateComment() {
-  //
+async function updateComment(
+  commentId: string | undefined,
+  newComment: { content: string | undefined }
+) {
   try {
+    const response = await apiClient.put(
+      `comment/update/${commentId}`,
+      newComment
+    );
+    return response;
   } catch (error: any) {
     console.log(error.message);
   }
@@ -36,7 +43,6 @@ async function deleteComment(commentId: string | undefined) {
   }
   try {
     const response = await apiClient.delete(`comment/delete/${commentId}`);
-    console.log('here');
     return response;
   } catch (error: any) {
     console.log(error.message);

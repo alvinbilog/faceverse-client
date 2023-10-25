@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import { CommentInterface, PostInterface, UserContextProps } from '@/app/types';
-import { useContext, useEffect, useState } from 'react';
-import { faEllipsis, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { useContext, useRef, useState } from 'react';
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMutation, useQueryClient } from 'react-query';
 import commentServices from '@/app/api/comment/commentApi';
 import { formatDate } from '@/app/utils';
-import { Menu } from '@headlessui/react';
+import { Dialog, Menu } from '@headlessui/react';
 import { UserContext } from '@/app/providers';
 
 interface CommentsProps {
@@ -17,8 +17,28 @@ interface CommentsProps {
 export default function Comments({ comment, postData }: CommentsProps) {
   let [isOpen, setIsOpen] = useState(false);
   const { user, setUser } = useContext(UserContext) as UserContextProps;
-  console.log('postData ', postData);
+  const textAreaRef = useRef(null);
+  const [newComment, setNewComment] = useState('');
+
   const queryClient = useQueryClient();
+
+  const updateCommentMutation = useMutation(
+    ({
+      commentId,
+      newComment,
+    }: {
+      commentId: string | undefined;
+      newComment: { content: string | undefined };
+    }) => commentServices.updateComment(commentId, newComment),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('post');
+      },
+      onError: (error: any) => {
+        console.log(error.message);
+      },
+    }
+  );
 
   const deleteCommentMutation = useMutation(
     (commentId: string | undefined) => commentServices.deleteComment(commentId),
@@ -33,7 +53,14 @@ export default function Comments({ comment, postData }: CommentsProps) {
     }
   );
 
-  function handleDelete(commentId: string) {
+  function handleEditComment(commentId: string, commentContent: string) {
+    const newComment = {
+      content: commentContent,
+    };
+    updateCommentMutation.mutate({ commentId, newComment });
+  }
+
+  function handleDeleteComment(commentId: string) {
     console.log('commentId ', commentId);
     deleteCommentMutation.mutate(commentId);
   }
@@ -66,7 +93,7 @@ export default function Comments({ comment, postData }: CommentsProps) {
             </div>
             <Menu>
               <div className="relative inline-block text-left">
-                {user?.data._id === commentAuthor._id &&
+                {user?.data._id === commentAuthor._id ||
                 user?.data._id === postData?.author._id ? (
                   <Menu.Button>
                     <FontAwesomeIcon
@@ -108,7 +135,7 @@ export default function Comments({ comment, postData }: CommentsProps) {
                             : 'text-gray-700 hover:bg-gray-100'
                         }`}
                         onClick={() => {
-                          handleDelete(comment._id);
+                          handleDeleteComment(comment._id);
                         }}
                       >
                         Delete
@@ -118,6 +145,54 @@ export default function Comments({ comment, postData }: CommentsProps) {
                 </Menu.Items>
               </div>
             </Menu>
+            <Dialog
+              as="div"
+              initialFocus={textAreaRef}
+              open={isOpen}
+              onClose={() => {
+                // setIsOpen(false);
+              }}
+              className="fixed inset-0 flex items-center justify-center z-50"
+            >
+              <div
+                className="absolute inset-0 bg-black opacity-50"
+                onClick={(e) => e.stopPropagation()}
+              ></div>
+              <Dialog.Panel className="relative z-50 w-1/2 bg-white p-4 rounded shadow-md mx-auto ">
+                <Dialog.Title>Edit Comment</Dialog.Title>
+
+                <textarea
+                  ref={textAreaRef}
+                  className="w-full p-2 border rounded "
+                  placeholder={comment.content}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                ></textarea>
+                <div className="flex items-center justify-between mt-2">
+                  <div>
+                    <button
+                      className="text-white bg-indigo-600 px-4 py-2 rounded hover:bg-indigo-700 mr-5"
+                      onClick={() => {
+                        handleEditComment(comment._id, newComment);
+                        setIsOpen(false);
+                      }}
+                      ref={textAreaRef}
+                    >
+                      Update
+                    </button>
+                    <button
+                      className="text-white bg-indigo-600 px-4 py-2 rounded hover:bg-indigo-700"
+                      onClick={() => {
+                        setIsOpen(false);
+                      }}
+                      ref={textAreaRef}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </Dialog.Panel>
+            </Dialog>
           </div>
         ))}
       </div>
