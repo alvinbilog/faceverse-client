@@ -10,13 +10,14 @@ import { postServices } from '@/app/api/post/postApi';
 import { useMutation, useQueryClient } from 'react-query';
 import { UserContext } from '@/app/providers';
 import { UserContextProps } from '@/app/types';
+import Friends from '@/app/components/friends/page';
+import Others from '@/app/components/others/page';
 
 export default function Home() {
   const [post, setPost] = useState<string | undefined>('');
   const [file, setFile] = useState<File | null>(null);
-  const { user, setUser } = useContext(UserContext) as UserContextProps;
-
   const queryClient = useQueryClient();
+  const { user, setUser } = useContext(UserContext) as UserContextProps;
 
   const createPostMutation = useMutation(
     (inputPostValue: string) =>
@@ -52,10 +53,7 @@ export default function Home() {
       {/* Main Content */}
       <div className="container mx-auto mt-8 flex space-x-8">
         {/* Friends Section */}
-        <div className="w-1/4 bg-white p-4 rounded shadow-md">
-          <h2 className="text-xl font-bold mb-4">Friends</h2>
-          {/* List of friends can go here */}
-        </div>
+        <Friends />
 
         {/* Posts Feed */}
         <div className="w-1/2">
@@ -91,13 +89,7 @@ export default function Home() {
           <Post />
         </div>
 
-        {/* Add Profile Section */}
-        <div className="w-1/4 bg-white p-4 rounded shadow-md">
-          <h2 className="text-xl font-bold mb-4">Add Profile</h2>
-          <button className="text-white bg-indigo-600 px-4 py-2 rounded hover:bg-indigo-700">
-            Add
-          </button>
-        </div>
+        <Others />
       </div>
     </div>
   );

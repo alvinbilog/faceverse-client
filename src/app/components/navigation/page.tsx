@@ -108,7 +108,10 @@ export default function Nav() {
             alt="User Profile"
             className="h-8 w-8 rounded-full border-2 border-white"
           />
-          <Link href={'/pages/profile'} className="text-white ml-2">
+          <Link
+            href={`/pages/profile/${data?.data._id}`}
+            className="text-white ml-2"
+          >
             {data?.data.firstName} {data?.data.lastName}
           </Link>
           {/* Logout */}
