@@ -5,8 +5,6 @@ import Post from '../../components/post/page';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-solid-svg-icons';
 import { postServices } from '@/app/api/post/postApi';
-// import { UserContext } from '@/app/providers';
-// import { UserContextType } from '@/app/types';
 import { useMutation, useQueryClient } from 'react-query';
 import { UserContext } from '@/app/providers';
 import { UserContextProps } from '@/app/types';
@@ -16,7 +14,6 @@ export default function Wall() {
   const [file, setFile] = useState<File | null>(null);
   const queryClient = useQueryClient();
   const { user, setUser } = useContext(UserContext) as UserContextProps;
-
   const createPostMutation = useMutation(
     (inputPostValue: string) =>
       postServices.createPost(user?.data._id, inputPostValue),
@@ -74,7 +71,11 @@ export default function Wall() {
         </div>
       </div>
 
-      <Post />
+      <Post userId={user?.data._id} />
+
+      {/* <p>{user?.data._id}</p> */}
+
+      {/* <Post /> */}
     </>
   );
 }

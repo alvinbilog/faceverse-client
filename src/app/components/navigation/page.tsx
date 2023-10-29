@@ -8,7 +8,7 @@ import {
   faMoon,
   faSun,
 } from '@fortawesome/free-solid-svg-icons';
-import authServices from '@/app/api/auth/auth-api';
+import authServices from '@/app/api/auth/authApi';
 import { useRouter } from 'next/navigation';
 import { createContext } from 'vm';
 import { UserContextProps, UserData } from '@/app/types';

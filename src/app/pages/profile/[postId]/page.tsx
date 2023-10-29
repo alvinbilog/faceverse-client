@@ -10,6 +10,7 @@ import Wall from '@/app/components/wall/page';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Menu } from '@headlessui/react';
+import Bio from '@/app/components/bio/page';
 
 function ProfilePage() {
   const { user, setUser } = useContext(UserContext) as UserContextProps;
@@ -31,7 +32,6 @@ function ProfilePage() {
           <h2 className="text-xl font-bold mb-4">Friends</h2>
           {/* List of friends can go here */}
         </div>
-
         {/* Main Content */}
         <div className="w-full md:w-1/2 container mx-auto mt-8 flex flex-col space-y-8">
           {/* Profile Header */}
@@ -72,14 +72,7 @@ function ProfilePage() {
             <Wall />
           </div>
         </div>
-
-        {/* Right Sidebar */}
-        <div className="w-full md:w-1/4 bg-white p-4 rounded shadow-md">
-          <h2 className="text-xl font-bold mb-4">Add Profile</h2>
-          <button className="text-white bg-indigo-600 px-4 py-2 rounded hover:bg-indigo-700">
-            Add
-          </button>
-        </div>
+        <Bio />
       </div>
     </div>
   );

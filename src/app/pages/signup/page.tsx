@@ -2,7 +2,7 @@
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import authServices from '@/app/api/auth/auth-api';
+import authServices from '@/app/api/auth/authApi';
 
 const SignupForm = () => {
   const formRef = useRef<HTMLFormElement>(null);

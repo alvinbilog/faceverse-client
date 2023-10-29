@@ -1,4 +1,9 @@
-import { CommentInterface, PostInterface, UserContextProps } from '@/app/types';
+import {
+  CommentInterface,
+  PostInterface,
+  UserContextProps,
+  UserInterface,
+} from '@/app/types';
 import { formatDate } from '@/app/utils';
 import {
   faEllipsis,
@@ -30,6 +35,8 @@ export default function PostList({ post }: PostListProps) {
   const [commentContent, setCommentContent] = useState('');
   const [postData, setPostData] = useState<PostInterface | null>(post);
   const { user, setUser } = useContext(UserContext) as UserContextProps;
+
+  const [isInProfile, setIsInProfile] = useState(false);
 
   const userId = (user?.data._id ?? '').toString();
 
@@ -116,10 +123,10 @@ export default function PostList({ post }: PostListProps) {
               >
                 <span>
                   {post.author.firstName} {post.author.lastName}
-                  {/* <p>login user id {user?.data._id}</p>
-            <p>author id of post {post.author._id}</p>
-            <p>Post Id {post._id}</p>
-            <p>postdata author id {postData?.author._id}</p> */}
+                  <p>login user id {user?.data._id}</p>
+                  <p>author id of post {post.author._id}</p>
+                  <p>Post Id {post._id}</p>
+                  <p>postdata author id {postData?.author._id}</p>
                 </span>
               </Link>
               <div>

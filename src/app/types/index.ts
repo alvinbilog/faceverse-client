@@ -37,9 +37,9 @@ export interface UserInterface {
   password: string;
   profilePicture?: string;
   bio?: string;
-  friends?: number[];
-  posts?: number[];
-  notifications?: number[];
+  friends?: string[];
+  posts?: PostInterface[];
+  notifications?: string[];
   createdAt: Date;
   updatedAt: Date;
   accountType: string;
@@ -64,7 +64,7 @@ export interface UserData {
     profilePicture?: string;
     bio?: string;
     friends?: string[];
-    posts?: string[];
+    posts?: PostInterface[];
     notifications?: string[];
     createdAt: Date;
     updatedAt: Date;
