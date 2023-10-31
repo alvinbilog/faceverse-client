@@ -13,10 +13,10 @@ export default function Post({ userId }: { userId?: string }) {
     isLoading,
     isError,
     error,
-    data: posts,
+    data: data,
     isFetching,
     isPreviousData,
-  } = useQuery<PostInterface[] | undefined, Error>(
+  } = useQuery<PostInterface[] | UserInterface, Error>(
     ['post', userId],
     async () => {
       let endpoint = 'post/all';
@@ -38,11 +38,13 @@ export default function Post({ userId }: { userId?: string }) {
   );
 
   // Sort post by date
-  // const sortedPosts: PostInterface[] | UserInterface[] | undefined =
-  //   posts?.sort(
-  //     (a, b) =>
-  //       new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-  //   );
+  const sortedPosts: PostInterface[] | UserInterface[] | undefined =
+    Array.isArray(data)
+      ? data.sort(
+          (a, b) =>
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        )
+      : undefined;
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -50,13 +52,14 @@ export default function Post({ userId }: { userId?: string }) {
   return (
     <>
       {userId ? (
+        // type is UserInterface
         <div className="">
-          <UserPostList posts={posts} />
+          <UserPostList data={data as UserInterface} />
         </div>
       ) : (
-        // type is post interface
+        // type is PostInterface
         <div className="">
-          {posts?.map((post: PostInterface) => (
+          {sortedPosts?.map((post: PostInterface) => (
             <PostList post={post} key={post._id} />
           ))}
         </div>

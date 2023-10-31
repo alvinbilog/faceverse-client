@@ -11,12 +11,10 @@ import { UserContext } from '@/app/providers';
 
 interface CommentsProps {
   comment: CommentInterface;
-  postData: PostInterface | null;
+  postData: PostInterface[] | null;
 }
 
 export default function CommentsProfile({ comment, postData }: CommentsProps) {
-  console.log('postData', postData);
-  console.log('comment', comment);
   let [isOpen, setIsOpen] = useState(false);
   const { user, setUser } = useContext(UserContext) as UserContextProps;
   const textAreaRef = useRef(null);
@@ -63,7 +61,7 @@ export default function CommentsProfile({ comment, postData }: CommentsProps) {
   }
 
   function handleDeleteComment(commentId: string) {
-    console.log('commentId ', commentId);
+    // console.log('commentId ', commentId);
     deleteCommentMutation.mutate(commentId);
   }
   return (
@@ -96,7 +94,7 @@ export default function CommentsProfile({ comment, postData }: CommentsProps) {
             <Menu>
               <div className="relative inline-block text-left">
                 {user?.data._id === commentAuthor._id ||
-                user?.data._id === postData?._id ? (
+                (postData && user?.data._id === postData[0]._id) ? (
                   <Menu.Button>
                     <FontAwesomeIcon
                       icon={faEllipsis}

@@ -22,15 +22,27 @@ import Comments from '../comments/page';
 import PostButtons from '../postBottons/page';
 import CommentsProfile from '../commentProfile/page';
 
-export default function UserPostList({ posts }: { posts: any }) {
+interface UserPostListProps {
+  data: UserInterface;
+}
+export default function UserPostList({ data }: UserPostListProps) {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const textAreaRef = useRef(null);
 
+  const sortedData: PostInterface[] | undefined = data.posts?.sort(
+    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+  );
+
   const [authorId, setAuthorId] = useState('');
   const [newContent, setNewContent] = useState('');
   const [commentContent, setCommentContent] = useState('');
-  const [postData, setPostData] = useState<PostInterface | null>(posts);
+  const [postData, setPostData] = useState<PostInterface[] | null>(
+    data?.posts ? data.posts : null
+  );
+  // this is for selecting and modifrying post, result of sorting a post
+  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+
   const { user, setUser } = useContext(UserContext) as UserContextProps;
 
   const [isInProfile, setIsInProfile] = useState(false);
@@ -56,12 +68,12 @@ export default function UserPostList({ posts }: { posts: any }) {
 
   const editPostMutation = useMutation(
     ({
-      postId,
+      selectedPostId,
       updatedPost,
     }: {
-      postId: string | undefined;
+      selectedPostId: string | undefined;
       updatedPost: { content: string | undefined };
-    }) => postServices.updatePost(postId, updatedPost),
+    }) => postServices.updatePost(selectedPostId, updatedPost),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('post');
@@ -88,22 +100,28 @@ export default function UserPostList({ posts }: { posts: any }) {
     deletePostMutation.mutate(postId);
   }
 
-  function handleEditPost(postId: string | undefined) {
-    // setIsOpen(true);
-    const updatedPost = {
-      content: newContent,
-    };
-    editPostMutation.mutate({ postId: postId, updatedPost });
+  function handleEditPost() {
+    console.log('selectedPostId', selectedPostId);
+    if (selectedPostId) {
+      const updatedPost = {
+        content: newContent,
+      };
+      editPostMutation.mutate({ selectedPostId: selectedPostId, updatedPost });
+    }
   }
 
   function handleCommentSubmit(postAuthor: string) {
     createCommentMutation.mutate(postAuthor);
     setCommentContent('');
   }
+
   return (
     <div>
-      {posts.posts.map((p: any) => (
-        <div className="bg-[#f6f4f2] p-4 rounded shadow-md mb-10" key={p._id}>
+      {sortedData?.map((post: PostInterface) => (
+        <div
+          className="bg-[#f6f4f2] p-4 rounded shadow-md mb-10"
+          key={post._id}
+        >
           {/* author */}
           <div className="flex justify-between items-center mb-2 ">
             <div className="flex items-center ">
@@ -119,22 +137,19 @@ export default function UserPostList({ posts }: { posts: any }) {
                   className="text-indigo-600 font-bold"
                 >
                   <span>
-                    {posts.firstName} {posts.lastName}
-                    {/* <p>login user id {user?.data._id}</p>
-                    <p>author id of post {posts._id}</p>
-                    <p>Post Id {posts._id}</p> */}
+                    {data.firstName} {data.lastName}
                   </span>
                 </Link>
                 <div>
                   <span className="text-gray-600 text-xs font-normal ">
-                    {formatDate(posts.updatedAt.toLocaleString())}
+                    {formatDate(data.updatedAt.toLocaleString())}
                   </span>
                 </div>
               </div>
             </div>
             <Menu>
               <div className="relative inline-block text-left">
-                {posts._id.trim() === userId.trim() && (
+                {data._id.trim() === userId.trim() && (
                   <Menu.Button>
                     <FontAwesomeIcon
                       icon={faEllipsis}
@@ -157,6 +172,9 @@ export default function UserPostList({ posts }: { posts: any }) {
                         }`}
                         onClick={() => {
                           setIsOpen(true);
+                          console.log('post._id', post._id);
+                          setSelectedPostId(post._id);
+                          setNewContent(post.content);
                         }}
                       >
                         Edit
@@ -172,7 +190,7 @@ export default function UserPostList({ posts }: { posts: any }) {
                             : 'text-gray-700 hover:bg-gray-100'
                         }`}
                         onClick={() => {
-                          handleDeletePost(posts._id);
+                          handleDeletePost(post._id);
                         }}
                       >
                         Delete
@@ -203,9 +221,7 @@ export default function UserPostList({ posts }: { posts: any }) {
               <textarea
                 ref={textAreaRef}
                 className="w-full p-2 border rounded "
-                placeholder={
-                  postData ? postData.content : `What's on your mind?`
-                }
+                value={newContent}
                 onChange={(e) => setNewContent(e.target.value)}
                 onClick={(e) => e.stopPropagation()}
               ></textarea>
@@ -220,7 +236,7 @@ export default function UserPostList({ posts }: { posts: any }) {
                   <button
                     className="text-white bg-indigo-600 px-4 py-2 rounded hover:bg-indigo-700 mr-5"
                     onClick={() => {
-                      handleEditPost(postData?._id);
+                      handleEditPost();
                       setIsOpen(false);
                     }}
                     ref={textAreaRef}
@@ -242,18 +258,24 @@ export default function UserPostList({ posts }: { posts: any }) {
           </Dialog>
 
           {/* content */}
-          {posts.content && (
-            <p className="text-gray-800 mb-2 ml-1">{posts.content}</p>
+
+          <p className="text-gray-800 mb-2 ml-1">{post.content}</p>
+
+          {post.image ? (
+            <img
+              src={post.image}
+              alt="Post images"
+              className="rounded-md mb-2"
+            />
+          ) : (
+            ''
           )}
-          {/* image */}
-          {p.image && (
-            <img src={p.image} alt="Post image" className="rounded-md mb-2" />
-          )}
+
           {/* likes and comments */}
           <PostButtons />
-          {(p.comments?.length ?? 0) > 0 && (
+          {(post.comments?.length ?? 0) > 0 && (
             <div className="space-y-2 mt-4 pl-4 border-l-2 border-indigo-200">
-              {p.comments?.map((comment: CommentInterface) => (
+              {post.comments?.map((comment: CommentInterface) => (
                 <CommentsProfile
                   comment={comment}
                   key={comment._id}
@@ -276,7 +298,7 @@ Like
                 className="w-full border rounded-md ps-2"
               />
               <button
-                onClick={() => handleCommentSubmit(posts._id)}
+                onClick={() => handleCommentSubmit(data._id)}
                 className="ml-5 bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700 "
               >
                 <FontAwesomeIcon icon={faPaperPlane} className="text-sm " />

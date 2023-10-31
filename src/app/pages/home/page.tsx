@@ -17,6 +17,7 @@ export default function Home() {
   const [post, setPost] = useState<string | undefined>('');
   const [file, setFile] = useState<File | null>(null);
   const queryClient = useQueryClient();
+
   const { user, setUser } = useContext(UserContext) as UserContextProps;
 
   const createPostMutation = useMutation(

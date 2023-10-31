@@ -35,7 +35,6 @@ export default function PostList({ post }: PostListProps) {
   const [commentContent, setCommentContent] = useState('');
   const [postData, setPostData] = useState<PostInterface | null>(post);
   const { user, setUser } = useContext(UserContext) as UserContextProps;
-
   const [isInProfile, setIsInProfile] = useState(false);
 
   const userId = (user?.data._id ?? '').toString();
@@ -123,10 +122,10 @@ export default function PostList({ post }: PostListProps) {
               >
                 <span>
                   {post.author.firstName} {post.author.lastName}
-                  <p>login user id {user?.data._id}</p>
+                  {/* <p>login user id {user?.data._id}</p>
                   <p>author id of post {post.author._id}</p>
                   <p>Post Id {post._id}</p>
-                  <p>postdata author id {postData?.author._id}</p>
+                  <p>postdata author id {postData?.author._id}</p> */}
                 </span>
               </Link>
               <div>
@@ -160,6 +159,7 @@ export default function PostList({ post }: PostListProps) {
                           : 'text-gray-700 hover:bg-gray-100'
                       }`}
                       onClick={() => {
+                        setNewContent(post.content);
                         setIsOpen(true);
                       }}
                     >
@@ -207,7 +207,7 @@ export default function PostList({ post }: PostListProps) {
             <textarea
               ref={textAreaRef}
               className="w-full p-2 border rounded "
-              placeholder={postData ? postData.content : `What's on your mind?`}
+              value={newContent}
               onChange={(e) => setNewContent(e.target.value)}
               onClick={(e) => e.stopPropagation()}
             ></textarea>

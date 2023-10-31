@@ -14,6 +14,7 @@ export default function Wall() {
   const [file, setFile] = useState<File | null>(null);
   const queryClient = useQueryClient();
   const { user, setUser } = useContext(UserContext) as UserContextProps;
+
   const createPostMutation = useMutation(
     (inputPostValue: string) =>
       postServices.createPost(user?.data._id, inputPostValue),
