@@ -18,7 +18,7 @@ export default function CommentsProfile({ comment, postData }: CommentsProps) {
   let [isOpen, setIsOpen] = useState(false);
   const { user, setUser } = useContext(UserContext) as UserContextProps;
   const textAreaRef = useRef(null);
-  const [newComment, setNewComment] = useState('');
+  const [newComment, setNewComment] = useState<string | undefined>('');
 
   const queryClient = useQueryClient();
 
@@ -53,7 +53,10 @@ export default function CommentsProfile({ comment, postData }: CommentsProps) {
     }
   );
 
-  function handleEditComment(commentId: string, commentContent: string) {
+  function handleEditComment(
+    commentId: string,
+    commentContent: string | undefined
+  ) {
     const newComment = {
       content: commentContent,
     };
@@ -118,7 +121,7 @@ export default function CommentsProfile({ comment, postData }: CommentsProps) {
                             : 'text-gray-700 hover:bg-gray-100'
                         }`}
                         onClick={() => {
-                          console.log('commentId', comment._id);
+                          setNewComment(comment.content);
                           setIsOpen(true);
                         }}
                       >
@@ -164,7 +167,7 @@ export default function CommentsProfile({ comment, postData }: CommentsProps) {
                 <textarea
                   ref={textAreaRef}
                   className="w-full p-2 border rounded "
-                  placeholder={comment.content}
+                  value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   onClick={(e) => e.stopPropagation()}
                 ></textarea>

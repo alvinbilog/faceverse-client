@@ -36,7 +36,7 @@ export default function UserPostList({ data }: UserPostListProps) {
 
   const [authorId, setAuthorId] = useState('');
   const [newContent, setNewContent] = useState('');
-  const [commentContent, setCommentContent] = useState('');
+  const [newComment, setNewComment] = useState('');
   const [postData, setPostData] = useState<PostInterface[] | null>(
     data?.posts ? data.posts : null
   );
@@ -54,7 +54,7 @@ export default function UserPostList({ data }: UserPostListProps) {
       commentServices.createComment(
         user?.data._id ? [user.data._id] : [],
         postAuthor ? [postAuthor] : [],
-        commentContent
+        newComment
       ),
     {
       onSuccess: () => {
@@ -112,7 +112,7 @@ export default function UserPostList({ data }: UserPostListProps) {
 
   function handleCommentSubmit(postAuthor: string) {
     createCommentMutation.mutate(postAuthor);
-    setCommentContent('');
+    setNewComment('');
   }
 
   return (
@@ -293,13 +293,16 @@ Like
               <input
                 type="text"
                 placeholder="Add a comment..."
-                value={commentContent}
-                onChange={(e) => setCommentContent(e.target.value)}
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
                 className="w-full border rounded-md ps-2"
               />
               <button
-                onClick={() => handleCommentSubmit(data._id)}
-                className="ml-5 bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700 "
+                onClick={() => {
+                  handleCommentSubmit(post._id);
+                  console.log('post.id', post._id);
+                }}
+                className="ml-5 bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700"
               >
                 <FontAwesomeIcon icon={faPaperPlane} className="text-sm " />
               </button>
