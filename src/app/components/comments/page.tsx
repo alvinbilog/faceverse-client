@@ -10,12 +10,13 @@ import { formatDate } from '@/app/utils';
 import { Dialog, Menu } from '@headlessui/react';
 import { UserContext } from '@/app/providers';
 
-interface CommentsProps {
+export default function Comments({
+  comment,
+  postData,
+}: {
   comment: CommentInterface;
   postData: PostInterface | null;
-}
-
-export default function Comments({ comment, postData }: CommentsProps) {
+}) {
   let [isOpen, setIsOpen] = useState(false);
   const { user, setUser } = useContext(UserContext) as UserContextProps;
   const textAreaRef = useRef(null);

@@ -1,6 +1,11 @@
 'use client';
 import Link from 'next/link';
-import { CommentInterface, PostInterface, UserContextProps } from '@/app/types';
+import {
+  AuthorInterface,
+  CommentInterface,
+  PostInterface,
+  UserContextProps,
+} from '@/app/types';
 import { useContext, useRef, useState } from 'react';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,12 +15,13 @@ import { formatDate } from '@/app/utils';
 import { Dialog, Menu } from '@headlessui/react';
 import { UserContext } from '@/app/providers';
 
-interface CommentsProps {
+export default function CommentsProfile({
+  comment,
+  postData,
+}: {
   comment: CommentInterface;
   postData: PostInterface[] | null;
-}
-
-export default function CommentsProfile({ comment, postData }: CommentsProps) {
+}) {
   let [isOpen, setIsOpen] = useState(false);
   const { user, setUser } = useContext(UserContext) as UserContextProps;
   const textAreaRef = useRef(null);
@@ -72,7 +78,7 @@ export default function CommentsProfile({ comment, postData }: CommentsProps) {
     <div>
       <div className="flex justify-between mb-1 ">
         {/* {comment.author} */}
-        {comment.author?.map((commentAuthor: any) => (
+        {comment.author?.map((commentAuthor: AuthorInterface) => (
           <div className="flex items-center  w-full" key={commentAuthor._id}>
             <img
               src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32' fill='none'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23E0E0E0'/%3E%3Cpath d='M16 17C18.7614 17 21 14.7614 21 12C21 9.23858 18.7614 7 16 7C13.2386 7 11 9.23858 11 12C11 14.7614 13.2386 17 16 17ZM16 19C12.1411 19 4 20.6863 4 24V26H28V24C28 20.6863 19.8589 19 16 19Z' fill='%23BDBDBD'/%3E%3C/svg%3E"
