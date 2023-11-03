@@ -28,16 +28,15 @@ interface UserPostListProps {
   data: UserInterface;
 }
 
-export default function UserPostList({ data }: { data: UserInterface }) {
+export default function UserPostList({ data }: { data: UserInterface[] }) {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const textAreaRef = useRef(null);
 
-  const sortedData: PostInterface[] | null = data.posts?.sort(
+  const sortedData: PostInterface[] | null = data?.posts?.sort(
     (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
   );
 
-  const [authorId, setAuthorId] = useState('');
   const [newContent, setNewContent] = useState('');
   const [newComment, setNewComment] = useState('');
   const [postData, setPostData] = useState<PostInterface[] | null>(
@@ -46,9 +45,7 @@ export default function UserPostList({ data }: { data: UserInterface }) {
   // this is for selecting and modifrying post, result of sorting a post
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
 
-  const { user, setUser } = useContext(UserContext) as UserContextProps;
-
-  const [isInProfile, setIsInProfile] = useState(false);
+  const { user } = useContext(UserContext) as UserContextProps;
 
   const userId = (user?.data._id ?? '').toString();
 
@@ -176,8 +173,8 @@ export default function UserPostList({ data }: { data: UserInterface }) {
                         onClick={() => {
                           setIsOpen(true);
                           console.log('post._id', post._id);
-                          setSelectedPostId(post._id);
-                          setNewContent(post.content);
+                          setSelectedPostId(post?._id);
+                          setNewContent(post?.content);
                         }}
                       >
                         Edit
@@ -276,7 +273,7 @@ export default function UserPostList({ data }: { data: UserInterface }) {
           <PostButtons />
           {(post.comments?.length ?? 0) > 0 && (
             <div className="space-y-2 mt-4 pl-4 border-l-2 border-indigo-200">
-              {post.comments?.map((comment: CommentInterface) => (
+              {post?.comments?.map((comment: CommentInterface) => (
                 <CommentsProfile
                   comment={comment}
                   key={comment._id}

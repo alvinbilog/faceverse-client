@@ -1,7 +1,12 @@
 // @ts-nocheck
 'use client';
 import Link from 'next/link';
-import { CommentInterface, PostInterface, UserContextProps } from '@/app/types';
+import {
+  AuthorInterface,
+  CommentInterface,
+  PostInterface,
+  UserContextProps,
+} from '@/app/types';
 import { useContext, useRef, useState } from 'react';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -19,9 +24,9 @@ export default function Comments({
   postData: PostInterface | null;
 }) {
   let [isOpen, setIsOpen] = useState(false);
-  const { user, setUser } = useContext(UserContext) as UserContextProps;
+  const { user } = useContext(UserContext) as UserContextProps;
   const textAreaRef = useRef(null);
-  const [newComment, setNewComment] = useState(comment.content);
+  const [newComment, setNewComment] = useState(comment?.content);
 
   const queryClient = useQueryClient();
 
@@ -71,8 +76,8 @@ export default function Comments({
     <div>
       <div className="flex justify-between mb-1 ">
         {/* {comment.author} */}
-        {comment.author?.map((commentAuthor: any) => (
-          <div className="flex items-center  w-full" key={commentAuthor._id}>
+        {comment?.author?.map((commentAuthor: AuthorInterface) => (
+          <div className="flex items-center  w-full" key={commentAuthor?._id}>
             <img
               src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32' fill='none'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23E0E0E0'/%3E%3Cpath d='M16 17C18.7614 17 21 14.7614 21 12C21 9.23858 18.7614 7 16 7C13.2386 7 11 9.23858 11 12C11 14.7614 13.2386 17 16 17ZM16 19C12.1411 19 4 20.6863 4 24V26H28V24C28 20.6863 19.8589 19 16 19Z' fill='%23BDBDBD'/%3E%3C/svg%3E"
               alt="User Profile"
@@ -85,19 +90,19 @@ export default function Comments({
                 className="text-indigo-600 font-medium flex-grow"
               >
                 <span>
-                  {commentAuthor.firstName} {commentAuthor.lastName}
+                  {commentAuthor?.firstName} {commentAuthor?.lastName}
                 </span>
               </Link>
               <div>
                 <span className="text-gray-600 text-xs font-normal ">
-                  {formatDate(commentAuthor.updatedAt.toLocaleString())}
+                  {formatDate(commentAuthor?.updatedAt.toLocaleString())}
                 </span>
               </div>
             </div>
             <Menu>
               <div className="relative inline-block text-left">
-                {user?.data._id === commentAuthor._id ||
-                user?.data._id === postData?.author._id ? (
+                {user?.data._id === commentAuthor?._id ||
+                user?.data._id === postData?.author?._id ? (
                   <Menu.Button>
                     <FontAwesomeIcon
                       icon={faEllipsis}
@@ -138,7 +143,7 @@ export default function Comments({
                             : 'text-gray-700 hover:bg-gray-100'
                         }`}
                         onClick={() => {
-                          handleDeleteComment(comment._id);
+                          handleDeleteComment(comment?._id);
                         }}
                       >
                         Delete
@@ -176,7 +181,7 @@ export default function Comments({
                     <button
                       className="text-white bg-indigo-600 px-4 py-2 rounded hover:bg-indigo-700 mr-5"
                       onClick={() => {
-                        handleEditComment(comment._id, newComment);
+                        handleEditComment(comment?._id, newComment);
                         setIsOpen(false);
                       }}
                       ref={textAreaRef}
@@ -199,7 +204,7 @@ export default function Comments({
           </div>
         ))}
       </div>
-      <p className="text-gray-700 pl-4">{comment.content}</p>
+      <p className="text-gray-700 pl-4">{comment?.content}</p>
       {/* <p>{user?.data._id}</p> */}
     </div>
   );

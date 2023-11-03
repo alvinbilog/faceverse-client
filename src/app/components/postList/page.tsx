@@ -22,22 +22,22 @@ interface PostListProps {
   post: PostInterface;
 }
 
-export default function PostList({ post }: PostListProps) {
+export default function PostList({ post }: PostInterface[]) {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const textAreaRef = useRef(null);
 
   const [newContent, setNewContent] = useState('');
   const [commentContent, setCommentContent] = useState('');
-  const [postData, setPostData] = useState<PostInterface | null>(post);
-  const { user, setUser } = useContext(UserContext) as UserContextProps;
+  const [postData] = useState<PostInterface | null>(post);
+  const { user } = useContext(UserContext) as UserContextProps;
 
   const userId = (user?.data._id ?? '').toString();
 
   const createCommentMutation = useMutation(
     (postAuthor: string) =>
       commentServices.createComment(
-        user?.data._id ? [user.data._id] : [],
+        user?.data._id ? [user?.data?._id] : [],
         postAuthor ? [postAuthor] : [],
         commentContent
       ),
@@ -116,7 +116,7 @@ export default function PostList({ post }: PostListProps) {
                 className="text-indigo-600 font-bold"
               >
                 <span>
-                  {post.author.firstName} {post.author.lastName}
+                  {post?.author?.firstName} {post?.author?.lastName}
                   {/* <p>login user id {user?.data._id}</p>
                   <p>author id of post {post.author._id}</p>
                   <p>Post Id {post._id}</p>
@@ -125,14 +125,14 @@ export default function PostList({ post }: PostListProps) {
               </Link>
               <div>
                 <span className="text-gray-600 text-xs font-normal ">
-                  {formatDate(post.author.updatedAt.toLocaleString())}
+                  {formatDate(post?.author?.updatedAt.toLocaleString())}
                 </span>
               </div>
             </div>
           </div>
           <Menu>
             <div className="relative inline-block text-left">
-              {post.author._id.trim() === userId.trim() && (
+              {post?.author?._id.trim() === userId.trim() && (
                 <Menu.Button>
                   <FontAwesomeIcon
                     icon={faEllipsis}
@@ -154,7 +154,7 @@ export default function PostList({ post }: PostListProps) {
                           : 'text-gray-700 hover:bg-gray-100'
                       }`}
                       onClick={() => {
-                        setNewContent(post.content);
+                        setNewContent(post?.content);
                         setIsOpen(true);
                       }}
                     >
@@ -171,7 +171,7 @@ export default function PostList({ post }: PostListProps) {
                           : 'text-gray-700 hover:bg-gray-100'
                       }`}
                       onClick={() => {
-                        handleDeletePost(post._id);
+                        handleDeletePost(post?._id);
                       }}
                     >
                       Delete
@@ -237,21 +237,21 @@ export default function PostList({ post }: PostListProps) {
         </Dialog>
 
         {/* content */}
-        {post.content && (
-          <p className="text-gray-800 mb-2 ml-1">{post.content}</p>
+        {post?.content && (
+          <p className="text-gray-800 mb-2 ml-1">{post?.content}</p>
         )}
         {/* image */}
-        {post.image && (
-          <img src={post.image} alt="Post image" className="rounded-md mb-2" />
+        {post?.image && (
+          <img src={post?.image} alt="Post image" className="rounded-md mb-2" />
         )}
         {/* likes and comments */}
         <PostButtons />
-        {(post.comments?.length ?? 0) > 0 && (
+        {(post?.comments?.length ?? 0) > 0 && (
           <div className="space-y-2 mt-4 pl-4 border-l-2 border-indigo-200">
-            {post.comments?.map((comment: CommentInterface) => (
+            {post?.comments?.map((comment: CommentInterface) => (
               <Comments
                 comment={comment}
-                key={comment._id}
+                key={comment?._id}
                 postData={postData}
               />
             ))}
@@ -271,7 +271,7 @@ Like
               className="w-full border rounded-md ps-2"
             />
             <button
-              onClick={() => handleCommentSubmit(post._id)}
+              onClick={() => handleCommentSubmit(post?._id)}
               className="ml-5 bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700 "
             >
               <FontAwesomeIcon icon={faPaperPlane} className="text-sm " />
