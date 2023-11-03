@@ -1,5 +1,6 @@
 // @ts-nocheck
 'use client';
+import { useContext, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
   AuthorInterface,
@@ -7,7 +8,6 @@ import {
   PostInterface,
   UserContextProps,
 } from '@/app/types';
-import { useContext, useRef, useState } from 'react';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMutation, useQueryClient } from 'react-query';
@@ -25,7 +25,7 @@ export default function CommentsProfile({
 }) {
   let [isOpen, setIsOpen] = useState(false);
   const { user, setUser } = useContext(UserContext) as UserContextProps;
-  const textAreaRef = useRef(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [newComment, setNewComment] = useState<string | null>('');
 
   const queryClient = useQueryClient();
@@ -184,7 +184,6 @@ export default function CommentsProfile({
                         handleEditComment(comment._id, newComment);
                         setIsOpen(false);
                       }}
-                      ref={textAreaRef}
                     >
                       Update
                     </button>
@@ -193,7 +192,6 @@ export default function CommentsProfile({
                       onClick={() => {
                         setIsOpen(false);
                       }}
-                      ref={textAreaRef}
                     >
                       Cancel
                     </button>

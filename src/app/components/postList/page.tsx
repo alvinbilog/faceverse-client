@@ -1,11 +1,7 @@
 // @ts-nocheck
 'use client';
-import {
-  CommentInterface,
-  PostInterface,
-  UserContextProps,
-  UserInterface,
-} from '@/app/types';
+import Link from 'next/link';
+import { CommentInterface, PostInterface, UserContextProps } from '@/app/types';
 import { formatDate } from '@/app/utils';
 import {
   faEllipsis,
@@ -14,7 +10,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Menu, Dialog } from '@headlessui/react';
-import Link from 'next/link';
 import React, { useContext, useRef, useState } from 'react';
 import Comments from '../comments/page';
 import PostButtons from '../postBottons/page';
@@ -32,12 +27,10 @@ export default function PostList({ post }: PostListProps) {
   const [isOpen, setIsOpen] = useState(false);
   const textAreaRef = useRef(null);
 
-  const [authorId, setAuthorId] = useState('');
   const [newContent, setNewContent] = useState('');
   const [commentContent, setCommentContent] = useState('');
   const [postData, setPostData] = useState<PostInterface | null>(post);
   const { user, setUser } = useContext(UserContext) as UserContextProps;
-  const [isInProfile, setIsInProfile] = useState(false);
 
   const userId = (user?.data._id ?? '').toString();
 
@@ -227,7 +220,6 @@ export default function PostList({ post }: PostListProps) {
                     handleEditPost(postData?._id);
                     setIsOpen(false);
                   }}
-                  ref={textAreaRef}
                 >
                   Update
                 </button>
@@ -236,7 +228,6 @@ export default function PostList({ post }: PostListProps) {
                   onClick={() => {
                     setIsOpen(false);
                   }}
-                  ref={textAreaRef}
                 >
                   Cancel
                 </button>

@@ -1,14 +1,15 @@
 // @ts-nocheck
 'use client';
-import commentServices from '@/app/api/comment/commentApi';
-import postServices from '@/app/api/post/postApi';
-import { UserContext } from '@/app/providers';
+import Link from 'next/link';
 import {
   CommentInterface,
   PostInterface,
   UserContextProps,
   UserInterface,
 } from '@/app/types';
+import commentServices from '@/app/api/comment/commentApi';
+import postServices from '@/app/api/post/postApi';
+import { UserContext } from '@/app/providers';
 import { formatDate } from '@/app/utils';
 import {
   faEllipsis,
@@ -17,10 +18,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Menu, Dialog } from '@headlessui/react';
-import Link from 'next/link';
 import React, { useContext, useRef, useState } from 'react';
 import { useQueryClient, useMutation } from 'react-query';
-import Comments from '../comments/page';
+
 import PostButtons from '../postBottons/page';
 import CommentsProfile from '../commentsProfile/page';
 
@@ -113,8 +113,8 @@ export default function UserPostList({ data }: { data: UserInterface }) {
     }
   }
 
-  function handleCommentSubmit(postAuthor: string) {
-    createCommentMutation.mutate(postAuthor);
+  function handleCommentSubmit(postId: string) {
+    createCommentMutation.mutate(postId);
     setNewComment('');
   }
 
@@ -242,7 +242,6 @@ export default function UserPostList({ data }: { data: UserInterface }) {
                       handleEditPost();
                       setIsOpen(false);
                     }}
-                    ref={textAreaRef}
                   >
                     Update
                   </button>
@@ -251,7 +250,6 @@ export default function UserPostList({ data }: { data: UserInterface }) {
                     onClick={() => {
                       setIsOpen(false);
                     }}
-                    ref={textAreaRef}
                   >
                     Cancel
                   </button>

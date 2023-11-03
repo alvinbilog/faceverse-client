@@ -21,7 +21,7 @@ export default function Comments({
   let [isOpen, setIsOpen] = useState(false);
   const { user, setUser } = useContext(UserContext) as UserContextProps;
   const textAreaRef = useRef(null);
-  const [newComment, setNewComment] = useState('');
+  const [newComment, setNewComment] = useState(comment.content);
 
   const queryClient = useQueryClient();
 
@@ -167,7 +167,7 @@ export default function Comments({
                 <textarea
                   ref={textAreaRef}
                   className="w-full p-2 border rounded "
-                  placeholder={comment.content}
+                  value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   onClick={(e) => e.stopPropagation()}
                 ></textarea>
