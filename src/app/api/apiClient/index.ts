@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:8000/api/v1/',
+  baseURL: 'https://faceverses.xyz/api/v1/',
 });
 
 // Helper function to get a cookie by name
