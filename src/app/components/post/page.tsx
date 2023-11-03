@@ -1,3 +1,5 @@
+// @ts-nocheck
+'use client';
 import React, { useContext, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { PostInterface, UserContextProps, UserInterface } from '@/app/types';

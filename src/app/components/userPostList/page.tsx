@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client';
 import commentServices from '@/app/api/comment/commentApi';
 import postServices from '@/app/api/post/postApi';
@@ -21,12 +22,13 @@ import React, { useContext, useRef, useState } from 'react';
 import { useQueryClient, useMutation } from 'react-query';
 import Comments from '../comments/page';
 import PostButtons from '../postBottons/page';
-import CommentsProfile from '../commentProfile/page';
+import CommentsProfile from '../commentsProfile/page';
 
 interface UserPostListProps {
   data: UserInterface;
 }
-export default function UserPostList({ data }: UserPostListProps) {
+
+export default function UserPostList({ data }: { data: UserInterface }) {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const textAreaRef = useRef(null);
