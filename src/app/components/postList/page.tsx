@@ -63,8 +63,8 @@ export default function PostList({ post }: PostListProps) {
       postId,
       updatedPost,
     }: {
-      postId: string | undefined;
-      updatedPost: { content: string | undefined };
+      postId: string | null;
+      updatedPost: { content: string | null };
     }) => postServices.updatePost(postId, updatedPost),
     {
       onSuccess: () => {
@@ -77,7 +77,7 @@ export default function PostList({ post }: PostListProps) {
   );
 
   const deletePostMutation = useMutation(
-    (postIdString: string | undefined) => postServices.deletePost(postIdString),
+    (postIdString: string | null) => postServices.deletePost(postIdString),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('post');
@@ -92,7 +92,7 @@ export default function PostList({ post }: PostListProps) {
     deletePostMutation.mutate(postId);
   }
 
-  function handleEditPost(postId: string | undefined) {
+  function handleEditPost(postId: string | null) {
     // setIsOpen(true);
     const updatedPost = {
       content: newContent,

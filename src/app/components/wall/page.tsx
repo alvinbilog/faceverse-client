@@ -10,7 +10,7 @@ import { UserContext } from '@/app/providers';
 import { UserContextProps } from '@/app/types';
 
 export default function Wall() {
-  const [post, setPost] = useState<string | undefined>('');
+  const [post, setPost] = useState<string | null>('');
   const [file, setFile] = useState<File | null>(null);
   const queryClient = useQueryClient();
   const { user, setUser } = useContext(UserContext) as UserContextProps;

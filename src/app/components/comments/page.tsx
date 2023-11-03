@@ -30,8 +30,8 @@ export default function Comments({
       commentId,
       newComment,
     }: {
-      commentId: string | undefined;
-      newComment: { content: string | undefined };
+      commentId: string | null;
+      newComment: { content: string | null };
     }) => commentServices.updateComment(commentId, newComment),
     {
       onSuccess: () => {
@@ -44,7 +44,7 @@ export default function Comments({
   );
 
   const deleteCommentMutation = useMutation(
-    (commentId: string | undefined) => commentServices.deleteComment(commentId),
+    (commentId: string | null) => commentServices.deleteComment(commentId),
     {
       onSuccess: () => {
         console.log('success');

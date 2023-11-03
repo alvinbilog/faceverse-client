@@ -14,7 +14,7 @@ import Friends from '@/app/components/friends/page';
 import Others from '@/app/components/others/page';
 
 export default function Home() {
-  const [post, setPost] = useState<string | undefined>('');
+  const [post, setPost] = useState<string | null>('');
   const [file, setFile] = useState<File | null>(null);
   const queryClient = useQueryClient();
 

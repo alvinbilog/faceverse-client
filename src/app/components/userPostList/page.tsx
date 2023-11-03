@@ -33,7 +33,7 @@ export default function UserPostList({ data }: { data: UserInterface }) {
   const [isOpen, setIsOpen] = useState(false);
   const textAreaRef = useRef(null);
 
-  const sortedData: PostInterface[] | undefined = data.posts?.sort(
+  const sortedData: PostInterface[] | null = data.posts?.sort(
     (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
   );
 
@@ -74,8 +74,8 @@ export default function UserPostList({ data }: { data: UserInterface }) {
       selectedPostId,
       updatedPost,
     }: {
-      selectedPostId: string | undefined;
-      updatedPost: { content: string | undefined };
+      selectedPostId: string | null;
+      updatedPost: { content: string | null };
     }) => postServices.updatePost(selectedPostId, updatedPost),
     {
       onSuccess: () => {
@@ -88,7 +88,7 @@ export default function UserPostList({ data }: { data: UserInterface }) {
   );
 
   const deletePostMutation = useMutation(
-    (postIdString: string | undefined) => postServices.deletePost(postIdString),
+    (postIdString: string | null) => postServices.deletePost(postIdString),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('post');

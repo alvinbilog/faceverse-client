@@ -40,13 +40,14 @@ export default function Post({ userId }: { userId?: string }) {
   );
 
   // Sort post by date
-  const sortedPosts: PostInterface[] | UserInterface[] | undefined =
-    Array.isArray(data)
-      ? data.sort(
-          (a, b) =>
-            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-        )
-      : undefined;
+  const sortedPosts: PostInterface[] | UserInterface[] | null = Array.isArray(
+    data
+  )
+    ? data.sort(
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      )
+    : null;
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;

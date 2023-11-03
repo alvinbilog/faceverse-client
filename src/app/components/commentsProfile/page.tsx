@@ -26,7 +26,7 @@ export default function CommentsProfile({
   let [isOpen, setIsOpen] = useState(false);
   const { user, setUser } = useContext(UserContext) as UserContextProps;
   const textAreaRef = useRef(null);
-  const [newComment, setNewComment] = useState<string | undefined>('');
+  const [newComment, setNewComment] = useState<string | null>('');
 
   const queryClient = useQueryClient();
 
@@ -35,8 +35,8 @@ export default function CommentsProfile({
       commentId,
       newComment,
     }: {
-      commentId: string | undefined;
-      newComment: { content: string | undefined };
+      commentId: string | null;
+      newComment: { content: string | null };
     }) => commentServices.updateComment(commentId, newComment),
     {
       onSuccess: () => {
@@ -49,7 +49,7 @@ export default function CommentsProfile({
   );
 
   const deleteCommentMutation = useMutation(
-    (commentId: string | undefined) => commentServices.deleteComment(commentId),
+    (commentId: string | null) => commentServices.deleteComment(commentId),
     {
       onSuccess: () => {
         console.log('success');
@@ -61,10 +61,7 @@ export default function CommentsProfile({
     }
   );
 
-  function handleEditComment(
-    commentId: string,
-    commentContent: string | undefined
-  ) {
+  function handleEditComment(commentId: string, commentContent: string | null) {
     const newComment = {
       content: commentContent,
     };
