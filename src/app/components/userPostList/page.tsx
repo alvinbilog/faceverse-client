@@ -1,3 +1,4 @@
+'use client';
 import commentServices from '@/app/api/comment/commentApi';
 import postServices from '@/app/api/post/postApi';
 import { UserContext } from '@/app/providers';

@@ -1,3 +1,4 @@
+'use client';
 import Link from 'next/link';
 import { CommentInterface, PostInterface, UserContextProps } from '@/app/types';
 import { useContext, useRef, useState } from 'react';
