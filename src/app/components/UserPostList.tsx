@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client';
 import Link from 'next/link';
 import {
@@ -20,15 +19,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Menu, Dialog } from '@headlessui/react';
 import React, { useContext, useRef, useState } from 'react';
 import { useQueryClient, useMutation } from 'react-query';
+import CommentsProfile from './CommentsProfile';
+import PostButtons from './PostBottons';
 
-import PostButtons from '../postBottons/page';
-import CommentsProfile from '../commentsProfile/page';
-
-interface UserPostListProps {
-  data: UserInterface;
-}
-
-export default function UserPostList({ data }: { data: UserInterface[] }) {
+export default function UserPostList({ data }: { data: UserInterface }) {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const textAreaRef = useRef(null);

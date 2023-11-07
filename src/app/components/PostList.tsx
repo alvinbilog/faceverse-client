@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client';
 import Link from 'next/link';
 import { CommentInterface, PostInterface, UserContextProps } from '@/app/types';
@@ -11,18 +10,15 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Menu, Dialog } from '@headlessui/react';
 import React, { useContext, useRef, useState } from 'react';
-import Comments from '../comments/page';
-import PostButtons from '../postBottons/page';
+
 import { useMutation, useQueryClient } from 'react-query';
 import commentServices from '@/app/api/comment/commentApi';
 import postServices from '@/app/api/post/postApi';
 import { UserContext } from '@/app/providers';
+import PostButtons from './PostBottons';
+import Comments from './Comments';
 
-interface PostListProps {
-  post: PostInterface;
-}
-
-export default function PostList({ post }: PostInterface[]) {
+export default function PostList({ post }: { post: PostInterface }) {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const textAreaRef = useRef(null);

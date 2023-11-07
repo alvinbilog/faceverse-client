@@ -1,16 +1,16 @@
 'use client';
-import Nav from '@/app/components/navigation/page';
+import Nav from '@/app/components/Navigation';
 import { PostInterface, UserContextProps } from '@/app/types';
 import { useContext, useState } from 'react';
 import { UserContext } from '@/app/providers';
-import PostList from '@/app/components/postList/page';
+import PostList from '@/app/components/PostList';
 import { useQueryClient } from 'react-query';
-import Post from '@/app/components/post/page';
-import Wall from '@/app/components/wall/page';
+import Post from '@/app/components/Post';
+import Wall from '@/app/components/Wall';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Menu } from '@headlessui/react';
-import Bio from '@/app/components/bio/page';
+import Bio from '@/app/components/Bio';
 
 function ProfilePage() {
   const { user, setUser } = useContext(UserContext) as UserContextProps;

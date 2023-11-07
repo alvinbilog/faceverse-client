@@ -1,23 +1,16 @@
 // @ts-nocheck
 'use client';
-import React, { useContext, useRef, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { PostInterface, UserContextProps, UserInterface } from '@/app/types';
-import { UserContext } from '@/app/providers';
+
+import { useQuery } from 'react-query';
+import { PostInterface, UserInterface } from '@/app/types';
 import apiClient from '@/app/api/apiClient';
-import postServices from '@/app/api/post/postApi';
-import commentServices from '@/app/api/comment/commentApi';
-import PostList from '../postList/page';
-import UserPostList from '../userPostList/page';
 
 export default function Post({ userId }: { userId?: string }) {
   const {
     isLoading,
-    isError,
+
     error,
     data: data,
-    isFetching,
-    isPreviousData,
   } = useQuery<PostInterface[] | UserInterface, Error>(
     ['post', userId],
     async () => {

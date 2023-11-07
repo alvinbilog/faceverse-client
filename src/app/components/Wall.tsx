@@ -1,13 +1,12 @@
 'use client';
 import React, { useContext, useRef, useState } from 'react';
-import Nav from '../../components/navigation/page';
-import Post from '../../components/post/page';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-solid-svg-icons';
 import { postServices } from '@/app/api/post/postApi';
 import { useMutation, useQueryClient } from 'react-query';
 import { UserContext } from '@/app/providers';
 import { UserContextProps } from '@/app/types';
+import Post from './Post';
 
 export default function Wall() {
   const [post, setPost] = useState<string | null>('');

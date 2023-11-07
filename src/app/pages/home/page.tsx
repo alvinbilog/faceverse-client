@@ -1,7 +1,7 @@
 'use client';
 import React, { useContext, useRef, useState } from 'react';
-import Nav from '../../components/navigation/page';
-import Post from '../../components/post/page';
+import Nav from '../../components/Navigation';
+import Post from '../../components/Post';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-solid-svg-icons';
 import { postServices } from '@/app/api/post/postApi';
@@ -10,8 +10,8 @@ import { postServices } from '@/app/api/post/postApi';
 import { useMutation, useQueryClient } from 'react-query';
 import { UserContext } from '@/app/providers';
 import { UserContextProps } from '@/app/types';
-import Friends from '@/app/components/friends/page';
-import Others from '@/app/components/others/page';
+import Friends from '@/app/components/Friends';
+import Others from '@/app/components/Others';
 
 export default function Home() {
   const [post, setPost] = useState<string | null>('');
