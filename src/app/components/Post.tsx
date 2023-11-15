@@ -4,6 +4,7 @@
 import { useQuery } from 'react-query';
 import { PostInterface, UserInterface } from '@/app/types';
 import apiClient from '@/app/api/apiClient';
+import PostList from './PostList';
 
 export default function Post({ userId }: { userId?: string }) {
   const {
